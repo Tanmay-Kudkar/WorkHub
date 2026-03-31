@@ -58,11 +58,10 @@ export default function EmployeeDetailModal({
     <>
       <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-md animate-fadeIn">
         <div
-          className={`w-full modal-content max-w-3xl max-h-[96dvh] sm:max-h-[92vh] overflow-hidden transform animate-slideUp flex flex-col rounded-3xl sm:rounded-2xl shadow-2xl ${
-            isDark
+          className={`w-full modal-content max-w-3xl max-h-[96dvh] sm:max-h-[92vh] overflow-hidden transform animate-slideUp flex flex-col rounded-3xl sm:rounded-2xl shadow-2xl ${isDark
               ? "bg-slate-950 border border-slate-700"
               : "bg-white"
-          }`}
+            }`}
         >
           {/* Header with Gradient */}
           <div className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-[length:200%_200%] animate-gradientShift p-5 sm:p-8 text-white">
@@ -86,9 +85,19 @@ export default function EmployeeDetailModal({
               </svg>
             </button>
             <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl sm:text-3xl font-bold">
-                {employee.firstName?.[0]}
-                {employee.lastName?.[0]}
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl sm:text-3xl font-bold overflow-hidden">
+                {employee.profileImage ? (
+                  <img
+                    src={employee.profileImage}
+                    alt="Employee profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <>
+                    {employee.firstName?.[0]}
+                    {employee.lastName?.[0]}
+                  </>
+                )}
               </div>
               <div>
                 <h2 className="text-2xl sm:text-3xl font-bold leading-tight">
@@ -104,9 +113,8 @@ export default function EmployeeDetailModal({
 
           {/* Content */}
           <div
-            className={`flex-1 overflow-y-auto p-4 sm:p-8 pb-24 sm:pb-8 ${
-              isDark ? "bg-slate-950/90" : "bg-white"
-            }`}
+            className={`flex-1 overflow-y-auto p-4 sm:p-8 pb-24 sm:pb-8 ${isDark ? "bg-slate-950/90" : "bg-white"
+              }`}
           >
             {!employee.firstName ? (
               // Loading skeleton for modal
@@ -122,11 +130,10 @@ export default function EmployeeDetailModal({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 {/* Contact Information */}
                 <div
-                  className={`rounded-2xl p-5 sm:p-6 border ${
-                    isDark
+                  className={`rounded-2xl p-5 sm:p-6 border ${isDark
                       ? "bg-gradient-to-br from-slate-900 to-blue-950 border-blue-900/50"
                       : "bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-100"
-                  }`}
+                    }`}
                 >
                   <h3 className={headingClass}>
                     <svg
@@ -159,9 +166,8 @@ export default function EmployeeDetailModal({
                       </label>
                       <p className={valueClass}>
                         {employee.phone
-                          ? `${employee.phoneCountryCode || "+1"} ${
-                              employee.phone
-                            }`
+                          ? `${employee.phoneCountryCode || "+1"} ${employee.phone
+                          }`
                           : "-"}
                       </p>
                     </div>
@@ -178,11 +184,10 @@ export default function EmployeeDetailModal({
 
                 {/* Employment Details */}
                 <div
-                  className={`rounded-2xl p-5 sm:p-6 border ${
-                    isDark
+                  className={`rounded-2xl p-5 sm:p-6 border ${isDark
                       ? "bg-gradient-to-br from-slate-900 to-violet-950 border-violet-900/50"
                       : "bg-gradient-to-br from-purple-50 to-pink-50 border-purple-100"
-                  }`}
+                    }`}
                 >
                   <h3 className={headingClass}>
                     <svg
@@ -231,11 +236,10 @@ export default function EmployeeDetailModal({
                       </label>
                       <p>
                         <span
-                          className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
-                            employee.active
+                          className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${employee.active
                               ? "bg-green-100 text-green-800"
                               : "bg-slate-100 text-slate-800"
-                          }`}
+                            }`}
                         >
                           {employee.active ? "Active" : "Inactive"}
                         </span>
@@ -246,11 +250,10 @@ export default function EmployeeDetailModal({
 
                 {/* Personal Information */}
                 <div
-                  className={`rounded-2xl p-5 sm:p-6 border ${
-                    isDark
+                  className={`rounded-2xl p-5 sm:p-6 border ${isDark
                       ? "bg-gradient-to-br from-slate-900 to-emerald-950 border-emerald-900/50"
                       : "bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-100"
-                  }`}
+                    }`}
                 >
                   <h3 className={headingClass}>
                     <svg
@@ -290,11 +293,10 @@ export default function EmployeeDetailModal({
 
                 {/* Financial Information */}
                 <div
-                  className={`rounded-2xl p-5 sm:p-6 border ${
-                    isDark
+                  className={`rounded-2xl p-5 sm:p-6 border ${isDark
                       ? "bg-gradient-to-br from-slate-900 to-amber-950 border-amber-900/50"
                       : "bg-gradient-to-br from-amber-50 to-orange-50 border-amber-100"
-                  }`}
+                    }`}
                 >
                   <h3 className={headingClass}>
                     <svg
@@ -318,9 +320,8 @@ export default function EmployeeDetailModal({
                         Salary
                       </label>
                       <p
-                        className={`font-bold text-2xl ${
-                          isDark ? "text-slate-100" : "text-slate-900"
-                        }`}
+                        className={`font-bold text-2xl ${isDark ? "text-slate-100" : "text-slate-900"
+                          }`}
                       >
                         {getCurrencySymbol(employee.currency || "USD")}{" "}
                         {Number(employee.salary || 0).toLocaleString()}
@@ -337,11 +338,10 @@ export default function EmployeeDetailModal({
 
           {/* Footer */}
           <div
-            className={`flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 px-4 sm:px-8 py-4 border-t ${
-              isDark
+            className={`flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 px-4 sm:px-8 py-4 border-t ${isDark
                 ? "bg-slate-900 border-slate-700"
                 : "bg-slate-50 border-slate-200"
-            }`}
+              }`}
           >
             <button
               type="button"
@@ -365,11 +365,10 @@ export default function EmployeeDetailModal({
               <button
                 type="button"
                 onClick={() => setShowAccessDenied(true)}
-                className={`w-full sm:w-auto rounded-lg px-4 py-2 font-semibold cursor-not-allowed ${
-                  isDark
+                className={`w-full sm:w-auto rounded-lg px-4 py-2 font-semibold cursor-not-allowed ${isDark
                     ? "bg-slate-800 border border-slate-600 text-slate-300"
                     : "bg-slate-200 text-slate-400"
-                }`}
+                  }`}
               >
                 🔒 Contact Admin
               </button>

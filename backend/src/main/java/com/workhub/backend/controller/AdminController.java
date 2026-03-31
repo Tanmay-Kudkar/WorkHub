@@ -11,39 +11,43 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.workhub.backend.entity.Employee;
-import com.workhub.backend.repository.EmployeeRepository;
+import com.workhub.backend.service.AdminService;
 
 @RestController
 @RequestMapping("/api/admin/employees")
 @CrossOrigin(origins = "http://localhost:5173")
 public class AdminController {
 
-  private final EmployeeRepository repo;
+  private final AdminService adminService;
 
-  public AdminController(EmployeeRepository repo) {
-    this.repo = repo;
+  public AdminController(AdminService adminService) {
+    this.adminService = adminService;
   }
 
   // Admin can list all employees
   @GetMapping
   public List<Employee> listAll() {
-    return repo.findAll();
+    return adminService.listAll();
   }
 
   // Admin can view any employee
   @GetMapping("/{id}")
   public ResponseEntity<Employee> get(@PathVariable Long id) {
-    return repo.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    try {
+      return ResponseEntity.ok(adminService.getById(id));
+    } catch (IllegalArgumentException ex) {
+      return ResponseEntity.notFound().build();
+    }
   }
 
   // Admin can delete any employee
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
-    return repo.findById(id)
-        .map(found -> {
-          repo.delete(found);
-          return ResponseEntity.noContent().<Void>build();
-        })
-        .orElse(ResponseEntity.notFound().build());
+    try {
+      adminService.deleteById(id);
+      return ResponseEntity.noContent().build();
+    } catch (IllegalArgumentException ex) {
+      return ResponseEntity.notFound().build();
+    }
   }
 }

@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import EmployeeForm from "./components/EmployeeForm.jsx";
 import EmployeeList from "./components/EmployeeList.jsx";
+import EmployeeReferencePanel from "./components/EmployeeReferencePanel.jsx";
 import Login from "./components/Login.jsx";
 import LandingPage from "./components/LandingPage.jsx";
 import NeonSweepButton from "./components/NeonSweepButton.jsx";
 import ThemeToggle from "./components/ThemeToggle.jsx";
 import GoogleAuthButton from "./components/GoogleAuthButton.jsx";
-import InfoModal from "./components/InfoModal.jsx";
 import { exchangeGoogleAuthToken } from "./services/api.js";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 
 // Use env API base (e.g. http://localhost:3000). Falls back to relative.
 const API_BASE = (import.meta.env?.VITE_API_BASE_URL || "").replace(/\/$/, "");
@@ -23,17 +24,25 @@ const formatDateDDMMYYYY = (date) => {
 };
 
 // A minimal inline Register form with cleaner styling
-function Register({ onRegistered, onSwitch, showGoogle = true, theme = "light" }) {
+function Register({
+  onRegistered,
+  onSwitch,
+  showGoogle = true,
+  theme = "light",
+  sharedError,
+  setSharedError,
+  active = true,
+}) {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
   });
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
+  const [toastClosing, setToastClosing] = useState(false);
 
   const isDark = theme === "dark";
   const registerLabelClass = isDark
@@ -62,18 +71,18 @@ function Register({ onRegistered, onSwitch, showGoogle = true, theme = "light" }
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    setSharedError(null);
 
     // Enforce minimum password length
     if ((form.password || "").length < 4) {
-      setError("Password must be at least 4 characters.");
+      setSharedError("Password must be at least 4 characters.");
       return;
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
-      setError("Please enter a valid email address.");
+      setSharedError("Please enter a valid email address.");
       return;
     }
 
@@ -116,19 +125,28 @@ function Register({ onRegistered, onSwitch, showGoogle = true, theme = "light" }
       const user = await res.json();
       onRegistered(user);
     } catch (err) {
-      setError(err.message || "Network error occurred. Please try again.");
+      setSharedError(err.message || "Network error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (error) {
+    if (sharedError) {
       setShowErrorToast(true);
-      const timer = setTimeout(() => setShowErrorToast(false), 3000);
-      return () => clearTimeout(timer);
+      setToastClosing(false);
+      const closeTimer = setTimeout(() => setToastClosing(true), 3200);
+      const clearTimer = setTimeout(() => {
+        setShowErrorToast(false);
+        setToastClosing(false);
+        setSharedError(null);
+      }, 3500);
+      return () => {
+        clearTimeout(closeTimer);
+        clearTimeout(clearTimer);
+      };
     }
-  }, [error]);
+  }, [sharedError]);
 
   return (
     <div className="w-full max-w-md mx-auto px-4 pt-4 pb-3 sm:px-6 sm:pt-5 sm:pb-4 relative">
@@ -136,50 +154,74 @@ function Register({ onRegistered, onSwitch, showGoogle = true, theme = "light" }
         Create Account
       </h2>
       {/* Interactive error toast/modal */}
-      {showErrorToast && error && (
-        <div className="fixed left-1/2 top-6 z-50 transform -translate-x-1/2 animate-fade-in-up">
-          <div className="flex items-center gap-2 px-5 py-3 bg-red-500 text-white rounded-xl shadow-lg border border-red-600">
-            <svg
-              className="w-5 h-5 flex-shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M18.364 5.636l-1.414-1.414A9 9 0 105.636 18.364l1.414-1.414A7 7 0 1116.95 7.05z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01"
-              />
-            </svg>
-            <span className="font-semibold">{error}</span>
-            <NeonSweepButton
-              type="button"
-              unstyled
-              onClick={() => setShowErrorToast(false)}
-              className="ml-3 text-white/80 hover:text-white focus:outline-none"
-              aria-label="Dismiss"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+      {active && showErrorToast && sharedError && (
+        <div
+          className={`fixed top-24 sm:top-28 z-50 left-4 sm:left-8 !w-auto max-w-[calc(100vw-2rem)] sm:max-w-[360px] transition-all duration-300 ${toastClosing ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0"}`}
+        >
+          <div
+            role="alert"
+            className={`rounded-2xl border px-4 py-3 text-sm font-semibold shadow-lg backdrop-blur ${isDark
+              ? "border-rose-400/40 bg-rose-500/10 text-rose-200"
+              : "border-rose-200 bg-rose-50 text-rose-800"
+              }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-start gap-2.5">
+                <svg
+                  className="mt-0.5 h-5 w-5 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M18.364 5.636l-1.414-1.414A9 9 0 105.636 18.364l1.414-1.414A7 7 0 1116.95 7.05z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01"
+                  />
+                </svg>
+                <p className="leading-snug">{sharedError}</p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setToastClosing(true);
+                  setTimeout(() => {
+                    setShowErrorToast(false);
+                    setToastClosing(false);
+                    setSharedError(null);
+                  }, 200);
+                }}
+                className={`ml-2 inline-flex h-7 w-7 items-center justify-center rounded-full leading-none transition ${isDark
+                  ? "text-rose-200/80 hover:text-rose-100 hover:bg-rose-500/10"
+                  : "text-rose-700/80 hover:text-rose-800 hover:bg-rose-200/40"
+                  }`}
+                aria-label="Dismiss"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </NeonSweepButton>
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -339,7 +381,7 @@ function Register({ onRegistered, onSwitch, showGoogle = true, theme = "light" }
           theme={theme}
           compact
           onAuthenticated={onRegistered}
-          onError={(message) => setError(message)}
+          onError={(message) => setSharedError(message)}
         />
       </form>
     </div>
@@ -357,8 +399,25 @@ export default function App() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [googleAuthLoading, setGoogleAuthLoading] = useState(false);
   const [googleAuthError, setGoogleAuthError] = useState("");
+  const [googleToastVisible, setGoogleToastVisible] = useState(false);
+  const [googleToastClosing, setGoogleToastClosing] = useState(false);
+  const [error, setError] = useState(null); // Shared error state for toast/modal
   const [authTransitionLoading, setAuthTransitionLoading] = useState(false);
   const authTransitionTimerRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Migrate legacy hash URLs (/#/workspace/...) to BrowserRouter paths (/workspace/...).
+  useEffect(() => {
+    const h = window.location.hash;
+    if (!h) return;
+
+    // Accept both "#/workspace/..." and "#/..." forms.
+    if (h.startsWith("#/")) {
+      const nextPath = h.slice(1); // remove leading '#'
+      navigate(nextPath, { replace: true });
+      return;
+    }
+  }, [navigate]);
 
   const triggerAuthViewLoading = useCallback(() => {
     if (authTransitionTimerRef.current) {
@@ -426,6 +485,7 @@ export default function App() {
 
     if (redirectError) {
       setGoogleAuthError(redirectError);
+      setError(redirectError); // Set the shared error state to trigger the UI toast/modal
       return;
     }
 
@@ -447,6 +507,29 @@ export default function App() {
   }, [onLoggedIn, triggerAuthViewLoading]);
 
   useEffect(() => {
+    if (!googleAuthError) {
+      setGoogleToastVisible(false);
+      setGoogleToastClosing(false);
+      return undefined;
+    }
+
+    setGoogleToastVisible(true);
+    setGoogleToastClosing(false);
+
+    const closeTimer = setTimeout(() => setGoogleToastClosing(true), 3200);
+    const clearTimer = setTimeout(() => {
+      setGoogleToastVisible(false);
+      setGoogleToastClosing(false);
+      setGoogleAuthError("");
+    }, 3500);
+
+    return () => {
+      clearTimeout(closeTimer);
+      clearTimeout(clearTimer);
+    };
+  }, [googleAuthError]);
+
+  useEffect(() => {
     return () => {
       if (authTransitionTimerRef.current) {
         window.clearTimeout(authTransitionTimerRef.current);
@@ -463,19 +546,11 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
-  const logout = () => {
-    setUser(null);
-    setShowRegister(false);
-    setShowAuthPanel(false);
-    setGoogleAuthError("");
-    sessionStorage.removeItem(AUTH_MODE_KEY);
-    localStorage.removeItem("wh_user");
-  };
-
   const closeAuthExperience = () => {
     setShowRegister(false);
     setShowAuthPanel(false);
     setGoogleAuthError("");
+    setError(null); // Clear shared error
     setAuthTransitionLoading(false);
     if (authTransitionTimerRef.current) {
       window.clearTimeout(authTransitionTimerRef.current);
@@ -489,6 +564,7 @@ export default function App() {
     setShowRegister(false);
     setShowAuthPanel(true);
     setGoogleAuthError("");
+    setError(null); // Clear shared error
     sessionStorage.setItem(AUTH_MODE_KEY, "login");
     if (shouldAnimateSwitch) {
       triggerAuthViewLoading();
@@ -500,10 +576,21 @@ export default function App() {
     setShowRegister(true);
     setShowAuthPanel(true);
     setGoogleAuthError("");
+    setError(null); // Clear shared error
     sessionStorage.setItem(AUTH_MODE_KEY, "register");
     if (shouldAnimateSwitch) {
       triggerAuthViewLoading();
     }
+  };
+
+  const logout = () => {
+    setUser(null);
+    setShowRegister(false);
+    setShowAuthPanel(false);
+    setGoogleAuthError("");
+    setError(null); // Clear shared error
+    sessionStorage.removeItem(AUTH_MODE_KEY);
+    localStorage.removeItem("wh_user");
   };
 
   const changeTheme = (nextTheme) => {
@@ -525,7 +612,11 @@ export default function App() {
     if (selected?.id === user.id) {
       // Fetch fresh user data from server
       try {
-        const res = await fetch(`${API_BASE}/api/employees/${user.id}`);
+        const params = new URLSearchParams({
+          requesterId: String(user.id),
+          requesterRole: String(user.role || "USER"),
+        });
+        const res = await fetch(`${API_BASE}/api/employees/${user.id}?${params.toString()}`);
         if (res.ok) {
           const updatedUser = await res.json();
           setUser(updatedUser);
@@ -544,189 +635,231 @@ export default function App() {
       {!user ? (
         showAuthPanel ? (
           <div
-            className={`min-h-screen flex flex-col bg-[length:200%_200%] animate-bg-gradient relative overflow-hidden ${
-              uiTheme === "dark"
-                ? "bg-gradient-to-br from-[#0b2247] via-[#35216e] to-[#7b234f]"
-                : "bg-gradient-to-br from-[#d6eaf5] via-[#efd9e8] to-[#dbe4ff]"
-            }`}
+            className={`min-h-screen flex flex-col bg-[length:200%_200%] animate-bg-gradient relative overflow-hidden ${uiTheme === "dark"
+              ? "bg-gradient-to-br from-[#0b2247] via-[#35216e] to-[#7b234f]"
+              : "bg-gradient-to-br from-[#d6eaf5] via-[#efd9e8] to-[#dbe4ff]"
+              }`}
           >
-          {/* Animated background shapes - optimized for mobile */}
-          <div
-            className={`absolute top-0 left-0 w-48 sm:w-96 h-48 sm:h-96 rounded-full blur-3xl animate-blob ${
-              uiTheme === "dark" ? "bg-white/10" : "bg-cyan-200/45"
-            }`}
-          ></div>
-          <div
-            className={`absolute top-0 right-0 w-48 sm:w-96 h-48 sm:h-96 rounded-full blur-3xl animate-blob animation-delay-2000 ${
-              uiTheme === "dark" ? "bg-white/10" : "bg-pink-200/45"
-            }`}
-          ></div>
-          <div
-            className={`absolute bottom-0 left-1/2 w-48 sm:w-96 h-48 sm:h-96 rounded-full blur-3xl animate-blob animation-delay-4000 ${
-              uiTheme === "dark" ? "bg-white/10" : "bg-violet-200/40"
-            }`}
-          ></div>
+            {/* Animated background shapes - optimized for mobile */}
+            <div
+              className={`absolute top-0 left-0 w-48 sm:w-96 h-48 sm:h-96 rounded-full blur-3xl animate-blob ${uiTheme === "dark" ? "bg-white/10" : "bg-cyan-200/45"
+                }`}
+            ></div>
+            <div
+              className={`absolute top-0 right-0 w-48 sm:w-96 h-48 sm:h-96 rounded-full blur-3xl animate-blob animation-delay-2000 ${uiTheme === "dark" ? "bg-white/10" : "bg-pink-200/45"
+                }`}
+            ></div>
+            <div
+              className={`absolute bottom-0 left-1/2 w-48 sm:w-96 h-48 sm:h-96 rounded-full blur-3xl animate-blob animation-delay-4000 ${uiTheme === "dark" ? "bg-white/10" : "bg-violet-200/40"
+                }`}
+            ></div>
 
-          <div className="absolute inset-x-0 top-0 z-20 px-4 sm:px-6 pt-4 sm:pt-6">
-            <div className="mx-auto flex w-full max-w-[1100px] items-center justify-between gap-3">
-              <button
-                type="button"
-                onClick={closeAuthExperience}
-                className={`inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-xs sm:text-sm font-extrabold tracking-[0.02em] transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98] ${
-                  uiTheme === "dark"
+            <div className="absolute inset-x-0 top-0 z-20 px-4 sm:px-6 pt-4 sm:pt-6">
+              <div className="mx-auto flex w-full max-w-[1100px] items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={closeAuthExperience}
+                  className={`inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-xs sm:text-sm font-extrabold tracking-[0.02em] transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98] ${uiTheme === "dark"
                     ? "border-white/40 bg-white/12 text-white hover:bg-white/22"
                     : "border-slate-300 bg-white/90 text-slate-800 hover:bg-white"
-                }`}
-              >
-                <svg
-                  className="h-3.5 w-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
+                    }`}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-                Back to landing
-              </button>
+                  <svg
+                    className="h-3.5 w-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                  Back to landing
+                </button>
 
-              <ThemeToggle
-                theme={uiTheme}
-                onChange={changeTheme}
-                size="sm"
-                className={
-                  uiTheme === "dark"
-                    ? "border-white/30 bg-black/20"
-                    : "border-slate-500/70 bg-white/80"
-                }
-              />
-            </div>
-          </div>
-
-          {googleAuthLoading && (
-            <div className="absolute left-1/2 top-20 z-30 -translate-x-1/2 rounded-full border border-white/25 bg-black/35 px-4 py-2 text-xs font-semibold text-white shadow-lg backdrop-blur">
-              Finishing Google sign-in...
-            </div>
-          )}
-
-          {/* Main content area - add entrance animation + mobile padding */}
-          <div className="flex-1 min-h-0 flex items-center sm:items-stretch justify-center px-4 pb-6 pt-16 sm:px-6 sm:pb-6 sm:pt-24">
-            <div
-              className={`auth-switch-container relative z-10 ${
-                showRegister ? "is-active" : ""
-              } ${uiTheme === "dark" ? "auth-theme-dark" : "auth-theme-light"} ${
-                authTransitionLoading ? "pointer-events-none" : ""
-              }`}
-              aria-busy={authTransitionLoading}
-            >
-              {authTransitionLoading && (
-                <div
-                  className={`absolute inset-0 z-40 overflow-hidden backdrop-blur-sm ${
+                <ThemeToggle
+                  theme={uiTheme}
+                  onChange={changeTheme}
+                  size="sm"
+                  className={
                     uiTheme === "dark"
+                      ? "border-white/30 bg-black/20"
+                      : "border-slate-500/70 bg-white/80"
+                  }
+                />
+              </div>
+            </div>
+
+            {googleAuthLoading && (
+              <div className="absolute left-1/2 top-20 z-30 -translate-x-1/2 rounded-full border border-white/25 bg-black/35 px-4 py-2 text-xs font-semibold text-white shadow-lg backdrop-blur">
+                Finishing Google sign-in...
+              </div>
+            )}
+
+            {/* Main content area - add entrance animation + mobile padding */}
+            <div className="flex-1 min-h-0 flex items-center sm:items-stretch justify-center px-4 pb-6 pt-16 sm:px-6 sm:pb-6 sm:pt-24">
+              <div
+                className={`auth-switch-container relative z-10 ${showRegister ? "is-active" : ""
+                  } ${uiTheme === "dark" ? "auth-theme-dark" : "auth-theme-light"} ${authTransitionLoading ? "pointer-events-none" : ""
+                  }`}
+                aria-busy={authTransitionLoading}
+              >
+                {googleAuthError && googleToastVisible && (
+                  <div
+                    className={`fixed top-24 sm:top-28 z-[60] ${showRegister ? "left-4 sm:left-8" : "right-4 sm:right-8"} !w-auto max-w-[calc(100vw-2rem)] sm:max-w-[360px] transition-all duration-300 ${googleToastClosing ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0"}`}
+                  >
+                    <div
+                      role="alert"
+                      className={`rounded-2xl border px-4 py-3 text-sm font-semibold shadow-lg backdrop-blur ${uiTheme === "dark"
+                        ? "border-rose-400/40 bg-rose-500/10 text-rose-200"
+                        : "border-rose-200 bg-rose-50 text-rose-800"
+                        }`}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="leading-snug">{googleAuthError}</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setGoogleToastClosing(true);
+                            setTimeout(() => {
+                              setGoogleToastVisible(false);
+                              setGoogleToastClosing(false);
+                              setGoogleAuthError("");
+                            }, 200);
+                          }}
+                          className={`ml-2 inline-flex h-7 w-7 items-center justify-center rounded-full leading-none transition ${uiTheme === "dark"
+                            ? "text-rose-200/80 hover:text-rose-100 hover:bg-rose-500/10"
+                            : "text-rose-700/80 hover:text-rose-800 hover:bg-rose-200/40"
+                            }`}
+                          aria-label="Dismiss"
+                        >
+                          <svg
+                            className="h-4 w-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {authTransitionLoading && (
+                  <div
+                    className={`absolute inset-0 z-40 overflow-hidden backdrop-blur-sm ${uiTheme === "dark"
                       ? "bg-slate-950/55 text-white"
                       : "bg-white/80 text-slate-700"
-                  }`}
-                >
-                  <div
-                    className={`absolute inset-0 auth-panel-shimmer ${
-                      uiTheme === "dark" ? "from-white/0 via-white/20 to-white/0" : "from-blue-50/0 via-blue-200/40 to-blue-50/0"
-                    }`}
-                  ></div>
-                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#4F46E5] via-[#9333EA] to-[#DB2777]"></div>
-                  <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center">
-                    <div className="mx-auto mb-2 flex h-8 items-end justify-center gap-1.5">
-                      <span className={`auth-eq-bar h-3 w-1.5 rounded-full ${uiTheme === "dark" ? "bg-cyan-300" : "bg-blue-500"}`} style={{ animationDelay: "0ms" }}></span>
-                      <span className={`auth-eq-bar h-6 w-1.5 rounded-full ${uiTheme === "dark" ? "bg-violet-300" : "bg-indigo-500"}`} style={{ animationDelay: "80ms" }}></span>
-                      <span className={`auth-eq-bar h-4 w-1.5 rounded-full ${uiTheme === "dark" ? "bg-pink-300" : "bg-fuchsia-500"}`} style={{ animationDelay: "160ms" }}></span>
-                    </div>
-                    <p className="text-xs font-bold uppercase tracking-[0.18em]">
-                      Switching View
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              <div className="auth-form-panel auth-sign-up">
-                <div className="auth-form-inner">
-                  <Register
-                    onRegistered={onLoggedIn}
-                    onSwitch={openLoginExperience}
-                    showGoogle={showRegister}
-                    theme={uiTheme}
-                  />
-                </div>
-              </div>
-
-              <div className="auth-form-panel auth-sign-in">
-                <div className="auth-form-inner p-5 sm:p-6">
-                  <div className="text-center mb-4 sm:mb-5">
-                    <h1 className="text-4xl sm:text-5xl font-black mb-2 tracking-tight">
-                      <span className="text-[#4F46E5]">Work</span>
-                      <span className="bg-gradient-to-r from-[#9333EA] to-[#DB2777] bg-clip-text text-transparent">
-                        Hub
-                      </span>
-                    </h1>
-                    <p
-                      className={`text-sm sm:text-base font-medium ${
-                        uiTheme === "dark" ? "text-slate-300" : "text-slate-500"
                       }`}
-                    >
-                      Employee Management System
-                    </p>
+                  >
+                    <div
+                      className={`absolute inset-0 auth-panel-shimmer ${uiTheme === "dark" ? "from-white/0 via-white/20 to-white/0" : "from-blue-50/0 via-blue-200/40 to-blue-50/0"
+                        }`}
+                    ></div>
+                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#4F46E5] via-[#9333EA] to-[#DB2777]"></div>
+                    <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center">
+                      <div className="mx-auto mb-2 flex h-8 items-end justify-center gap-1.5">
+                        <span className={`auth-eq-bar h-3 w-1.5 rounded-full ${uiTheme === "dark" ? "bg-cyan-300" : "bg-blue-500"}`} style={{ animationDelay: "0ms" }}></span>
+                        <span className={`auth-eq-bar h-6 w-1.5 rounded-full ${uiTheme === "dark" ? "bg-violet-300" : "bg-indigo-500"}`} style={{ animationDelay: "80ms" }}></span>
+                        <span className={`auth-eq-bar h-4 w-1.5 rounded-full ${uiTheme === "dark" ? "bg-pink-300" : "bg-fuchsia-500"}`} style={{ animationDelay: "160ms" }}></span>
+                      </div>
+                      <p className="text-xs font-bold uppercase tracking-[0.18em]">
+                        Switching View
+                      </p>
+                    </div>
                   </div>
-                  <Login
-                    onLoggedIn={onLoggedIn}
-                    onSwitchToRegister={openRegistrationExperience}
-                    showGoogle={!showRegister}
-                    theme={uiTheme}
-                  />
-                </div>
-              </div>
+                )}
 
-              <div className="auth-toggle-box">
-                <div className="auth-toggle-panel auth-toggle-left">
-                  <h2 className="text-2xl sm:text-3xl font-extrabold">Hello, Welcome!</h2>
-                  <p className="mt-3 text-sm sm:text-base text-white/90 max-w-xs">
-                    Don&apos;t have an account? Register to unlock all WorkHub
-                    features.
-                  </p>
-                  <NeonSweepButton
-                    type="button"
-                    tone="violet"
-                    size="md"
-                    onClick={openRegistrationExperience}
-                    className="auth-toggle-btn auth-toggle-btn-sweep"
-                  >
-                    Register
-                  </NeonSweepButton>
+                <div className="auth-form-panel auth-sign-up">
+                  <div className="auth-form-inner">
+                    <Register
+                      onRegistered={onLoggedIn}
+                      onSwitch={openLoginExperience}
+                      showGoogle={showRegister}
+                      theme={uiTheme}
+                      sharedError={error}
+                      setSharedError={setError}
+                      active={showRegister}
+                    />
+                  </div>
                 </div>
 
-                <div className="auth-toggle-panel auth-toggle-right">
-                  <h2 className="text-2xl sm:text-3xl font-extrabold">Welcome Back!</h2>
-                  <p className="mt-3 text-sm sm:text-base text-white/90 max-w-xs">
-                    Already have an account? Sign in and continue where you left
-                    off.
-                  </p>
-                  <NeonSweepButton
-                    type="button"
-                    tone="cyan"
-                    size="md"
-                    onClick={openLoginExperience}
-                    className="auth-toggle-btn auth-toggle-btn-sweep"
-                  >
-                    Login
-                  </NeonSweepButton>
+                <div className="auth-form-panel auth-sign-in">
+                  <div className="auth-form-inner p-5 sm:p-6">
+                    <div className="text-center mb-4 sm:mb-5">
+                      <h1 className="text-4xl sm:text-5xl font-black mb-2 tracking-tight">
+                        <span className="text-[#4F46E5]">Work</span>
+                        <span className="bg-gradient-to-r from-[#9333EA] to-[#DB2777] bg-clip-text text-transparent">
+                          Hub
+                        </span>
+                      </h1>
+                      <p
+                        className={`text-sm sm:text-base font-medium ${uiTheme === "dark" ? "text-slate-300" : "text-slate-500"
+                          }`}
+                      >
+                        Employee Management System
+                      </p>
+                    </div>
+                    <Login
+                      onLoggedIn={onLoggedIn}
+                      onSwitchToRegister={openRegistrationExperience}
+                      showGoogle={!showRegister}
+                      theme={uiTheme}
+                      active={!showRegister}
+                    />
+                  </div>
+                </div>
+
+                <div className="auth-toggle-box">
+                  <div className="auth-toggle-panel auth-toggle-left">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold">Hello, Welcome!</h2>
+                    <p className="mt-3 text-sm sm:text-base text-white/90 max-w-xs">
+                      Don&apos;t have an account? Register to unlock all WorkHub
+                      features.
+                    </p>
+                    <NeonSweepButton
+                      type="button"
+                      tone="violet"
+                      size="md"
+                      onClick={openRegistrationExperience}
+                      className="auth-toggle-btn auth-toggle-btn-sweep"
+                    >
+                      Register
+                    </NeonSweepButton>
+                  </div>
+
+                  <div className="auth-toggle-panel auth-toggle-right">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold">Welcome Back!</h2>
+                    <p className="mt-3 text-sm sm:text-base text-white/90 max-w-xs">
+                      Already have an account? Sign in and continue where you left
+                      off.
+                    </p>
+                    <NeonSweepButton
+                      type="button"
+                      tone="cyan"
+                      size="md"
+                      onClick={openLoginExperience}
+                      className="auth-toggle-btn auth-toggle-btn-sweep"
+                    >
+                      Login
+                    </NeonSweepButton>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <style>{`
+            <style>{`
             @keyframes bg-gradient {
               0%, 100% { background-position: 0% 50%; }
               50% { background-position: 100% 50%; }
@@ -791,22 +924,38 @@ export default function App() {
         )
       ) : (
         <div
-          className={`min-h-screen flex flex-col ${
-            uiTheme === "dark" ? "dashboard-theme-dark" : "dashboard-theme-light"
-          }`}
+          className={`min-h-screen flex flex-col ${uiTheme === "dark" ? "dashboard-theme-dark" : "dashboard-theme-light"
+            }`}
         >
           {/* Nav - subtle entrance */}
           <nav
-            className={`backdrop-blur-md border-b shadow-lg flex-shrink-0 relative overflow-hidden animate-fade-in-up ${
-              uiTheme === "dark"
-                ? "bg-slate-900/90 border-slate-700"
-                : "bg-white border-slate-200"
-            }`}
+            className={`backdrop-blur-md border-b shadow-lg flex-shrink-0 relative overflow-hidden animate-fade-in-up ${uiTheme === "dark"
+              ? "bg-slate-900/90 border-slate-700"
+              : "bg-white border-slate-200"
+              }`}
           >
             {/* Desktop-only decorative elements */}
             <div className="hidden xl:block absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 relative z-10">
+              {/* Mobile-only avatar pinned to top-right */}
+              <div className="sm:hidden absolute top-3 right-4">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 shadow-lg overflow-hidden flex items-center justify-center text-white font-bold">
+                  {user.profileImage ? (
+                    <img
+                      src={user.profileImage}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span>
+                      {user.firstName?.[0]}
+                      {user.lastName?.[0]}
+                    </span>
+                  )}
+                </div>
+              </div>
+
               <div className="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex w-full items-center justify-between gap-2 sm:gap-4 lg:w-auto lg:justify-start">
                   {/* Desktop enhanced logo */}
@@ -862,19 +1011,28 @@ export default function App() {
                     }
                   />
 
+                  <button
+                    type="button"
+                    onClick={() => navigate("/workspace/attendance")}
+                    className={`rounded-xl border px-3.5 py-2 text-xs sm:text-sm font-extrabold tracking-[0.02em] transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98] ${uiTheme === "dark"
+                      ? "border-slate-600 bg-slate-900/70 text-slate-100 hover:bg-slate-800"
+                      : "border-slate-200 bg-white/90 text-slate-800 hover:bg-white"
+                      }`}
+                  >
+                    Workspace
+                  </button>
+
                   {/* Enhanced desktop time display */}
                   <div
-                    className={`hidden xl:flex items-center gap-3 px-4 py-3 rounded-xl backdrop-blur-sm border shadow-lg ${
-                      uiTheme === "dark"
-                        ? "bg-slate-900/90 border-slate-700"
-                        : "bg-gradient-to-r from-slate-50 via-blue-50 to-indigo-50 border-slate-200"
-                    }`}
+                    className={`hidden xl:flex items-center gap-3 px-4 py-3 rounded-xl backdrop-blur-sm border shadow-lg ${uiTheme === "dark"
+                      ? "bg-slate-900/90 border-slate-700"
+                      : "bg-gradient-to-r from-slate-50 via-blue-50 to-indigo-50 border-slate-200"
+                      }`}
                   >
                     <div className="flex items-center gap-2">
                       <svg
-                        className={`w-5 h-5 animate-pulse ${
-                          uiTheme === "dark" ? "text-cyan-300" : "text-blue-500"
-                        }`}
+                        className={`w-5 h-5 animate-pulse ${uiTheme === "dark" ? "text-cyan-300" : "text-blue-500"
+                          }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -884,9 +1042,8 @@ export default function App() {
                       </svg>
                       <div className="flex flex-col">
                         <span
-                          className={`text-lg font-bold tabular-nums animate-timeUpdate ${
-                            uiTheme === "dark" ? "text-slate-100" : "text-slate-800"
-                          }`}
+                          className={`text-lg font-bold tabular-nums animate-timeUpdate ${uiTheme === "dark" ? "text-slate-100" : "text-slate-800"
+                            }`}
                         >
                           {currentTime.toLocaleTimeString([], {
                             hour: "2-digit",
@@ -896,9 +1053,8 @@ export default function App() {
                           })}
                         </span>
                         <span
-                          className={`text-sm font-medium animate-dateSlide ${
-                            uiTheme === "dark" ? "text-slate-300" : "text-slate-500"
-                          }`}
+                          className={`text-sm font-medium animate-dateSlide ${uiTheme === "dark" ? "text-slate-300" : "text-slate-500"
+                            }`}
                         >
                           {formatDateDDMMYYYY(currentTime)}
                         </span>
@@ -906,17 +1062,15 @@ export default function App() {
                     </div>
                     {/* Desktop-only live indicator */}
                     <div
-                      className={`flex items-center gap-1 px-2 py-1 rounded-full ${
-                        uiTheme === "dark"
-                          ? "bg-emerald-500/20"
-                          : "bg-green-100"
-                      }`}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-full ${uiTheme === "dark"
+                        ? "bg-emerald-500/20"
+                        : "bg-green-100"
+                        }`}
                     >
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
                       <span
-                        className={`text-xs font-medium ${
-                          uiTheme === "dark" ? "text-emerald-200" : "text-green-700"
-                        }`}
+                        className={`text-xs font-medium ${uiTheme === "dark" ? "text-emerald-200" : "text-green-700"
+                          }`}
                       >
                         LIVE
                       </span>
@@ -925,16 +1079,14 @@ export default function App() {
 
                   {/* Mobile/Tablet time display */}
                   <div
-                    className={`hidden sm:flex xl:hidden items-center gap-1 px-2 py-1 rounded-md border ${
-                      uiTheme === "dark"
-                        ? "bg-slate-900/90 border-slate-700"
-                        : "bg-slate-100 border-slate-200"
-                    }`}
+                    className={`hidden sm:flex xl:hidden items-center gap-1 px-2 py-1 rounded-md border ${uiTheme === "dark"
+                      ? "bg-slate-900/90 border-slate-700"
+                      : "bg-slate-100 border-slate-200"
+                      }`}
                   >
                     <svg
-                      className={`w-3 h-3 ${
-                        uiTheme === "dark" ? "text-cyan-300" : "text-slate-500"
-                      }`}
+                      className={`w-3 h-3 ${uiTheme === "dark" ? "text-cyan-300" : "text-slate-500"
+                        }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -943,9 +1095,8 @@ export default function App() {
                       <polyline points="12,6 12,12 16,14"></polyline>
                     </svg>
                     <span
-                      className={`text-xs font-medium tabular-nums ${
-                        uiTheme === "dark" ? "text-slate-200" : "text-slate-600"
-                      }`}
+                      className={`text-xs font-medium tabular-nums ${uiTheme === "dark" ? "text-slate-200" : "text-slate-600"
+                        }`}
                     >
                       {currentTime.toLocaleTimeString([], {
                         hour: "2-digit",
@@ -956,38 +1107,43 @@ export default function App() {
                     </span>
                   </div>
 
-                  {/* Desktop enhanced user profile card */}
+                  {/* User profile + logout */}
                   <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0">
-                    <div className="relative group">
-                      {/* Desktop enhanced avatar */}
+                    <div className="hidden sm:block relative group">
+                      {/* Desktop/tablet enhanced avatar */}
                       <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs sm:text-sm lg:text-base shadow-lg cursor-default relative overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer hidden lg:block"></div>
-                        <span className="relative z-10">
-                          {user.firstName?.[0]}
-                          {user.lastName?.[0]}
-                        </span>
+                        {user.profileImage ? (
+                          <img
+                            src={user.profileImage}
+                            alt="Profile"
+                            className="relative z-10 w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="relative z-10">
+                            {user.firstName?.[0]}
+                            {user.lastName?.[0]}
+                          </span>
+                        )}
                       </div>
                       {/* Desktop-only status indicator */}
                       <div
-                        className={`hidden lg:block absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 rounded-full animate-pulse ${
-                          uiTheme === "dark" ? "border-slate-900" : "border-white"
-                        }`}
+                        className={`hidden lg:block absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 rounded-full animate-pulse ${uiTheme === "dark" ? "border-slate-900" : "border-white"
+                          }`}
                       ></div>
                     </div>
 
                     {/* Enhanced desktop user info */}
                     <div className="hidden xl:block text-right min-w-0">
                       <div
-                        className={`max-w-[248px] rounded-lg border px-3 py-2 ${
-                          uiTheme === "dark"
-                            ? "bg-slate-900/90 border-slate-700"
-                            : "bg-gradient-to-r from-slate-50 to-blue-50 border-slate-200"
-                        }`}
+                        className={`max-w-[248px] rounded-lg border px-3 py-2 ${uiTheme === "dark"
+                          ? "bg-slate-900/90 border-slate-700"
+                          : "bg-gradient-to-r from-slate-50 to-blue-50 border-slate-200"
+                          }`}
                       >
                         <p
-                          className={`flex items-center justify-end gap-2 text-sm lg:text-base font-semibold truncate ${
-                            uiTheme === "dark" ? "text-slate-100" : "text-slate-900"
-                          }`}
+                          className={`flex items-center justify-end gap-2 text-sm lg:text-base font-semibold truncate ${uiTheme === "dark" ? "text-slate-100" : "text-slate-900"
+                            }`}
                         >
                           {user.firstName} {user.lastName}
                           {user.role === "ADMIN" && (
@@ -998,19 +1154,20 @@ export default function App() {
                           )}
                         </p>
                         <p
-                          className={`truncate text-xs lg:text-sm ${
-                            uiTheme === "dark" ? "text-slate-300" : "text-slate-500"
-                          }`}
+                          className={`truncate text-xs lg:text-sm ${uiTheme === "dark" ? "text-slate-300" : "text-slate-500"
+                            }`}
                         >
                           {user.email}
                         </p>
                         {/* Desktop-only additional info */}
                         <p
-                          className={`hidden lg:block mt-1 text-xs ${
-                            uiTheme === "dark" ? "text-slate-400" : "text-slate-400"
-                          }`}
+                          className={`hidden lg:block mt-1 text-xs ${uiTheme === "dark" ? "text-slate-400" : "text-slate-400"
+                            }`}
                         >
-                          Last login: {new Date().toLocaleDateString()}
+                          Last login:{" "}
+                          {user.lastLoginAt
+                            ? new Date(user.lastLoginAt).toLocaleDateString()
+                            : "First login"}
                         </p>
                       </div>
                     </div>
@@ -1019,11 +1176,11 @@ export default function App() {
                     <button
                       type="button"
                       onClick={logout}
-                      className="group relative shrink-0 rounded-lg bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2.5 font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-sm lg:text-base"
+                      className="group relative shrink-0 min-w-28 sm:min-w-0 rounded-lg bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 px-4 sm:px-4 lg:px-5 py-2 sm:py-2 lg:py-2.5 font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-sm lg:text-base"
                     >
-                      <span className="relative z-10 flex items-center gap-1 sm:gap-2">
+                      <span className="relative z-10 flex w-full items-center justify-center gap-1 sm:gap-2">
                         <svg
-                          className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 group-hover:rotate-12 transition-transform"
+                          className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 group-hover:rotate-12 transition-transform"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -1035,9 +1192,7 @@ export default function App() {
                             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                           />
                         </svg>
-                        <span className="hidden sm:inline lg:text-base">
-                          Logout
-                        </span>
+                        <span className="lg:text-base">Logout</span>
                       </span>
                       {/* Desktop-only hover effect */}
                       <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 rounded-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
@@ -1082,35 +1237,61 @@ export default function App() {
 
           {/* Content wrapper - stagger children on mount */}
           <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full stagger-container">
-            {/* Show form only to admin or when user is editing their own profile */}
-            {(user.role === "ADMIN" ||
-              (selected && selected.id === user.id)) && (
-              <div ref={formRef}>
-                <EmployeeForm
-                  selected={selected}
-                  onSaved={handleSaved}
-                  theme={uiTheme}
-                />
-              </div>
-            )}
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <>
+                    {/* Show form only to admin or when user is editing their own profile */}
+                    {(user.role === "ADMIN" ||
+                      (selected && selected.id === user.id)) && (
+                        <div ref={formRef}>
+                          <EmployeeForm
+                            selected={selected}
+                            onSaved={handleSaved}
+                            currentUser={user}
+                            theme={uiTheme}
+                          />
+                        </div>
+                      )}
 
-            {/* Show employee list to everyone with conditional buttons */}
-            <EmployeeList
-              onEdit={handleEdit}
-              currentUser={user}
-              refreshKey={refreshKey}
-              theme={uiTheme}
-            />
+                    {/* Show employee list to everyone with conditional buttons */}
+                    <EmployeeList
+                      onEdit={handleEdit}
+                      currentUser={user}
+                      refreshKey={refreshKey}
+                      theme={uiTheme}
+                    />
+                  </>
+                }
+              />
+
+              <Route
+                path="/workspace"
+                element={<Navigate to="/workspace/attendance" replace />}
+              />
+              <Route
+                path="/workspace/:page"
+                element={
+                  <EmployeeReferencePanel
+                    currentUser={user}
+                    theme={uiTheme}
+                    mode="page"
+                  />
+                }
+              />
+
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
           </div>
 
           {/* Footer - entrance animation */}
           {/* Enhanced desktop footer */}
           <footer
-            className={`border-t py-4 sm:py-6 lg:py-8 shadow-inner flex-shrink-0 animate-fade-in-up ${
-              uiTheme === "dark"
-                ? "bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border-slate-700"
-                : "bg-gradient-to-r from-slate-50 via-white to-slate-50 border-slate-200"
-            }`}
+            className={`border-t py-4 sm:py-6 lg:py-8 shadow-inner flex-shrink-0 animate-fade-in-up ${uiTheme === "dark"
+              ? "bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border-slate-700"
+              : "bg-gradient-to-r from-slate-50 via-white to-slate-50 border-slate-200"
+              }`}
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
               {/* Desktop enhanced footer */}
@@ -1214,101 +1395,205 @@ export default function App() {
               </div>
 
               {/* Mobile/Tablet simple footer */}
-              <div className="lg:hidden flex flex-col items-center justify-center gap-3 sm:gap-4">
+              <div className="lg:hidden flex flex-col items-center justify-center gap-4 sm:gap-5">
                 <div className="text-center animate-slideDown">
                   <h3 className="text-lg sm:text-xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
                     WorkHub
                   </h3>
-                  <p className="text-slate-500 text-xs sm:text-sm">
+                  <p
+                    className={`${uiTheme === "dark" ? "text-slate-300" : "text-slate-500"
+                      } text-xs sm:text-sm`}
+                  >
                     Streamline Your Workforce Management
                   </p>
                 </div>
 
+                {/* Mobile meta row (from desktop footer) */}
+                <div className="flex flex-wrap items-center justify-center gap-2.5">
+                  <span
+                    className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold ${uiTheme === "dark"
+                      ? "border-slate-700 bg-slate-900/60 text-slate-200"
+                      : "border-slate-200 bg-white/80 text-slate-700"
+                      }`}
+                  >
+                    Version 1.0.0
+                  </span>
+                  <span
+                    className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold ${uiTheme === "dark"
+                      ? "border-slate-700 bg-slate-900/60 text-slate-200"
+                      : "border-slate-200 bg-white/80 text-slate-700"
+                      }`}
+                  >
+                    Built with React & Spring Boot
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold ${uiTheme === "dark"
+                      ? "border-emerald-900/50 bg-emerald-950/30 text-emerald-200"
+                      : "border-emerald-200 bg-emerald-50 text-emerald-800"
+                      }`}
+                  >
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    System Online
+                  </span>
+                </div>
+
                 {/* Divider */}
-                <div className="w-48 sm:w-64 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
+                <div
+                  className={`w-48 sm:w-64 h-px bg-gradient-to-r from-transparent ${uiTheme === "dark" ? "via-slate-700" : "via-slate-300"
+                    } to-transparent`}
+                ></div>
+
+                {/* Compact feature grid (Product/Technology/Deployment) */}
+                <div className="w-full max-w-sm sm:max-w-none grid grid-cols-2 gap-3">
+                  <div
+                    className={`rounded-2xl border p-4 text-left ${uiTheme === "dark"
+                      ? "border-slate-800 bg-slate-950/30"
+                      : "border-slate-200 bg-white/70"
+                      }`}
+                  >
+                    <p
+                      className={`${uiTheme === "dark" ? "text-slate-100" : "text-slate-900"
+                        } text-xs font-black tracking-wide`}
+                    >
+                      Product
+                    </p>
+                    <ul
+                      className={`${uiTheme === "dark" ? "text-slate-300" : "text-slate-600"
+                        } mt-2.5 space-y-1.5 text-[11px]`}
+                    >
+                      <li>Employee Management</li>
+                      <li>Role-based Access</li>
+                      <li>Real-time Updates</li>
+                    </ul>
+                  </div>
+
+                  <div
+                    className={`rounded-2xl border p-4 text-left ${uiTheme === "dark"
+                      ? "border-slate-800 bg-slate-950/30"
+                      : "border-slate-200 bg-white/70"
+                      }`}
+                  >
+                    <p
+                      className={`${uiTheme === "dark" ? "text-slate-100" : "text-slate-900"
+                        } text-xs font-black tracking-wide`}
+                    >
+                      Technology
+                    </p>
+                    <ul
+                      className={`${uiTheme === "dark" ? "text-slate-300" : "text-slate-600"
+                        } mt-2.5 space-y-1.5 text-[11px]`}
+                    >
+                      <li>React 18</li>
+                      <li>Spring Boot 3</li>
+                      <li>PostgreSQL 18</li>
+                    </ul>
+                  </div>
+
+                  <div
+                    className={`col-span-2 rounded-2xl border p-4 text-left ${uiTheme === "dark"
+                      ? "border-slate-800 bg-slate-950/30"
+                      : "border-slate-200 bg-white/70"
+                      }`}
+                  >
+                    <p
+                      className={`${uiTheme === "dark" ? "text-slate-100" : "text-slate-900"
+                        } text-xs font-black tracking-wide`}
+                    >
+                      Deployment
+                    </p>
+                    <ul
+                      className={`${uiTheme === "dark" ? "text-slate-300" : "text-slate-600"
+                        } mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-[11px]`}
+                    >
+                      <li>Render.com Frontend</li>
+                      <li>Render.com Backend</li>
+                      <li className="sm:col-span-2">PostgreSQL Cloud DB</li>
+                    </ul>
+                  </div>
+                </div>
 
                 {/* Team credits - mobile responsive grid */}
                 <div className="text-center animate-slideUp">
-                  <p className="text-slate-600 text-xs sm:text-sm mb-3">
+                  <p
+                    className={`${uiTheme === "dark" ? "text-slate-200" : "text-slate-600"
+                      } text-xs sm:text-sm mb-3`}
+                  >
                     Crafted with{" "}
                     <span className="inline-block animate-heartbeat text-red-500">
                       ❤️
                     </span>{" "}
                     by our amazing team
                   </p>
-                  <div className="flex flex-wrap justify-center gap-2 sm:gap-3 max-w-sm sm:max-w-none mx-auto">
-                    <span className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all cursor-default">
-                      <svg
-                        className="w-3 h-3 sm:w-4 sm:h-4"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
+                  <div className="mx-auto grid w-full max-w-sm grid-cols-2 gap-3 sm:max-w-none sm:flex sm:w-auto sm:flex-wrap sm:justify-center sm:gap-3">
+                    <span className="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-[11px] sm:text-sm font-semibold shadow-md cursor-default">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="hidden xs:inline">Parth</span>
-                      <span className="xs:hidden">P</span>
+                      <span className="leading-tight">Tanmay Kudkar</span>
                     </span>
-                    <span className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-white text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all cursor-default">
-                      <svg
-                        className="w-3 h-3 sm:w-4 sm:h-4"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
+
+                    <span className="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-white text-[11px] sm:text-sm font-semibold shadow-md cursor-default">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="hidden xs:inline">Sameer</span>
-                      <span className="xs:hidden">S</span>
+                      <span className="leading-tight">Atharva Raut</span>
                     </span>
-                    <span className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all cursor-default">
-                      <svg
-                        className="w-3 h-3 sm:w-4 sm:h-4"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
+
+                    <span className="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-[11px] sm:text-sm font-semibold shadow-md cursor-default">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="hidden xs:inline">Nidhish</span>
-                      <span className="xs:hidden">N</span>
+                      <span className="leading-tight">Sameer Balgar</span>
                     </span>
-                    <span className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 text-white text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all cursor-default">
-                      <svg
-                        className="w-3 h-3 sm:w-4 sm:h-4"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
+
+                    <span className="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 text-white text-[11px] sm:text-sm font-semibold shadow-md cursor-default">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="hidden xs:inline">Vedika</span>
-                      <span className="xs:hidden">V</span>
+                      <span className="leading-tight">Tejas Dhuri</span>
+                    </span>
+
+                    <span className="col-span-2 inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-gradient-to-r from-slate-700 to-slate-800 text-white text-[11px] sm:text-sm font-semibold shadow-md cursor-default sm:col-span-1">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          fillRule="evenodd"
+                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="leading-tight">Ritikesh Nayak</span>
                     </span>
                   </div>
                 </div>
                 {/* Copyright */}
-                <p className="text-slate-500 text-xs sm:text-sm animate-fadeIn">
-                  © 2025 WorkHub. All rights reserved.
+                <p
+                  className={`${uiTheme === "dark" ? "text-slate-300" : "text-slate-500"
+                    } text-xs sm:text-sm animate-fadeIn`}
+                >
+                  © 2026 WorkHub. All rights reserved.
                 </p>
               </div>
 
               {/* Desktop footer bottom */}
               <div className="hidden lg:flex items-center justify-between pt-6 border-t border-slate-200">
                 <p className="text-slate-500 text-sm">
-                  © 2025 WorkHub. All rights reserved.
+                  © 2026 WorkHub. All rights reserved.
                 </p>
                 <div className="flex items-center gap-4 text-sm text-slate-500">
                   <span className="hover:text-blue-600 transition-colors cursor-pointer">
@@ -1321,13 +1606,6 @@ export default function App() {
         </div>
       )}
 
-      <InfoModal
-        isOpen={Boolean(googleAuthError)}
-        title="Google Sign-in Failed"
-        message={googleAuthError}
-        onClose={() => setGoogleAuthError("")}
-        theme={uiTheme}
-      />
     </div>
   );
 }

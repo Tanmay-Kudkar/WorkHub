@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.workhub.backend.entity.Employee;
-import com.workhub.backend.repository.EmployeeRepository;
+import com.workhub.backend.exception.ForbiddenException;
+import com.workhub.backend.service.EmployeeService;
 
 import jakarta.validation.Valid;
 
@@ -30,45 +31,45 @@ public class EmployeeController {
 
   private static final Logger log = LoggerFactory.getLogger(EmployeeController.class);
 
-  private final EmployeeRepository repo;
-  private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+  private final EmployeeService employeeService;
 
-  public EmployeeController(EmployeeRepository repo) {
-    this.repo = repo;
+  public EmployeeController(EmployeeService employeeService) {
+    this.employeeService = employeeService;
   }
 
   @GetMapping
-  public List<Employee> list() {
-    return repo.findAll();
+  public List<Employee> list(
+      @RequestParam(required = false) Long requesterId,
+      @RequestParam(required = false) String requesterRole) {
+    if (isAdmin(requesterRole)) {
+      return employeeService.list();
+    }
+    if (requesterId == null) {
+      throw new IllegalArgumentException("Requester context is required.");
+    }
+    return List.of(employeeService.getById(requesterId));
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Employee> get(@PathVariable Long id) {
-    return repo.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+  public ResponseEntity<Employee> get(
+      @PathVariable Long id,
+      @RequestParam(required = false) Long requesterId,
+      @RequestParam(required = false) String requesterRole) {
+    try {
+      enforceSelfOrAdmin(id, requesterId, requesterRole);
+      return ResponseEntity.ok(employeeService.getById(id));
+    } catch (IllegalArgumentException ex) {
+      return ResponseEntity.notFound().build();
+    }
   }
 
   @PostMapping
   public ResponseEntity<?> create(@RequestBody Employee employee) {
     try {
-      // Frontend sends plain password in transient `password`; store only hashed
-      // value.
-      if (employee.getPassword() != null && !employee.getPassword().isBlank()) {
-        employee.setPasswordHash(passwordEncoder.encode(employee.getPassword()));
-      } else if (employee.getPasswordHash() != null && !employee.getPasswordHash().isBlank()) {
-        // Backward-compatible fallback for legacy payloads.
-        employee.setPasswordHash(passwordEncoder.encode(employee.getPasswordHash()));
-      }
-
-      // Set default role if not provided
-      if (employee.getRole() == null || employee.getRole().isEmpty()) {
-        employee.setRole("USER");
-      }
-
-      Employee saved = repo.save(employee);
-      return ResponseEntity.ok(saved);
+      return ResponseEntity.ok(employeeService.create(employee));
     } catch (DataIntegrityViolationException ex) {
       log.error("Data integrity violation when creating employee", ex);
-      if (ex.getMessage().contains("Duplicate entry") && ex.getMessage().contains("email")) {
+      if (EmployeeService.isDuplicateEmailException(ex)) {
         return ResponseEntity.status(409).body(Map.of("error",
             "An account with this email already exists. Please use a different email or try logging in."));
       }
@@ -80,30 +81,51 @@ public class EmployeeController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Employee> update(@PathVariable Long id, @Valid @RequestBody Employee e) {
-    return repo.findById(id)
-        .map(found -> {
-          e.setId(found.getId());
-          if (e.getPassword() != null && !e.getPassword().isBlank()) {
-            e.setPasswordHash(passwordEncoder.encode(e.getPassword()));
-          } else {
-            e.setPasswordHash(found.getPasswordHash());
-          }
-          if (e.getRole() == null || e.getRole().isEmpty()) {
-            e.setRole(found.getRole());
-          }
-          return ResponseEntity.ok(repo.save(e));
-        })
-        .orElse(ResponseEntity.notFound().build());
+  public ResponseEntity<?> update(
+      @PathVariable Long id,
+      @Valid @RequestBody Employee e,
+      @RequestParam(required = false) Long requesterId,
+      @RequestParam(required = false) String requesterRole) {
+    try {
+      enforceSelfOrAdmin(id, requesterId, requesterRole);
+      return ResponseEntity.ok(employeeService.update(id, e));
+    } catch (IllegalArgumentException ex) {
+      String msg = ex.getMessage() == null ? "Invalid request." : ex.getMessage();
+      if (msg.toLowerCase().contains("not found")) {
+        return ResponseEntity.notFound().build();
+      }
+      return ResponseEntity.badRequest().body(Map.of("error", msg));
+    }
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
-    return repo.findById(id)
-        .map(found -> {
-          repo.delete(found);
-          return ResponseEntity.noContent().<Void>build();
-        })
-        .orElse(ResponseEntity.notFound().build());
+  public ResponseEntity<Void> delete(
+      @PathVariable Long id,
+      @RequestParam(required = false) String requesterRole) {
+    if (!isAdmin(requesterRole)) {
+      throw new ForbiddenException("Only admin can delete employees.");
+    }
+    try {
+      employeeService.delete(id);
+      return ResponseEntity.noContent().build();
+    } catch (IllegalArgumentException ex) {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
+  private boolean isAdmin(String requesterRole) {
+    return requesterRole != null && "ADMIN".equalsIgnoreCase(requesterRole.trim());
+  }
+
+  private void enforceSelfOrAdmin(Long targetEmployeeId, Long requesterId, String requesterRole) {
+    if (isAdmin(requesterRole)) {
+      return;
+    }
+    if (requesterId == null) {
+      throw new IllegalArgumentException("Requester context is required.");
+    }
+    if (!targetEmployeeId.equals(requesterId)) {
+      throw new ForbiddenException("Access denied for this employee profile.");
+    }
   }
 }

@@ -1,6 +1,7 @@
 package com.workhub.backend.entity;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -44,10 +45,20 @@ public class Employee {
   @Column(length = 5)
   private String phoneCountryCode = "+1";
 
-  private String department;
+  @Column(name = "department_id")
+  private Long departmentId;
 
-  private String position;
+  @Column(name = "job_title_id")
+  private Long jobTitleId;
 
+  @Transient
+  private String departmentName;
+
+  @Transient
+  private String jobTitleName;
+
+  // Retained as a lightweight profile field; detailed address lives in
+  // employee_addresses.
   private String address;
 
   private BigDecimal salary;
@@ -65,6 +76,9 @@ public class Employee {
   @Column(nullable = false)
   private String role = "USER"; // USER or ADMIN
 
+  @Column(name = "profile_image", columnDefinition = "TEXT")
+  private String profileImage;
+
   @Transient
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String password;
@@ -72,6 +86,9 @@ public class Employee {
   @JsonIgnore
   @Column(name = "password_hash")
   private String passwordHash;
+
+  @Column(name = "last_login_at")
+  private Instant lastLoginAt;
 
   @PrePersist
   @PreUpdate
@@ -84,10 +101,6 @@ public class Employee {
       this.lastName = this.lastName.trim();
     if (this.phone != null)
       this.phone = this.phone.trim();
-    if (this.department != null)
-      this.department = this.department.trim();
-    if (this.position != null)
-      this.position = this.position.trim();
     if (this.address != null)
       this.address = this.address.trim();
     if (this.phoneCountryCode != null)
@@ -146,12 +159,28 @@ public class Employee {
     this.phoneCountryCode = phoneCountryCode;
   }
 
-  public String getDepartment() {
-    return department;
+  public Long getDepartmentId() {
+    return departmentId;
   }
 
-  public void setDepartment(String department) {
-    this.department = department;
+  public void setDepartmentId(Long departmentId) {
+    this.departmentId = departmentId;
+  }
+
+  public Long getJobTitleId() {
+    return jobTitleId;
+  }
+
+  public void setJobTitleId(Long jobTitleId) {
+    this.jobTitleId = jobTitleId;
+  }
+
+  public String getDepartmentName() {
+    return departmentName;
+  }
+
+  public void setDepartmentName(String departmentName) {
+    this.departmentName = departmentName;
   }
 
   public String getAddress() {
@@ -170,12 +199,31 @@ public class Employee {
     this.dateOfBirth = dateOfBirth;
   }
 
+  public String getJobTitleName() {
+    return jobTitleName;
+  }
+
+  public void setJobTitleName(String jobTitleName) {
+    this.jobTitleName = jobTitleName;
+  }
+
+  // Backward-compatible aliases for existing frontend components.
+  @Transient
+  public String getDepartment() {
+    return departmentName;
+  }
+
+  public void setDepartment(String department) {
+    this.departmentName = department;
+  }
+
+  @Transient
   public String getPosition() {
-    return position;
+    return jobTitleName;
   }
 
   public void setPosition(String position) {
-    this.position = position;
+    this.jobTitleName = position;
   }
 
   public BigDecimal getSalary() {
@@ -218,6 +266,14 @@ public class Employee {
     this.password = password;
   }
 
+  public String getProfileImage() {
+    return profileImage;
+  }
+
+  public void setProfileImage(String profileImage) {
+    this.profileImage = profileImage;
+  }
+
   public String getPasswordHash() {
     return passwordHash;
   }
@@ -232,5 +288,13 @@ public class Employee {
 
   public void setRole(String role) {
     this.role = role;
+  }
+
+  public Instant getLastLoginAt() {
+    return lastLoginAt;
+  }
+
+  public void setLastLoginAt(Instant lastLoginAt) {
+    this.lastLoginAt = lastLoginAt;
   }
 }

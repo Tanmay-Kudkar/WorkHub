@@ -198,10 +198,9 @@ cd frontend && npm run dev
 
 **🎉 Access the application at `http://localhost:5173`**
 
-### 🔑 Default Credentials
+### 🔑 Admin Login Credentials
 
-- **Admin**: `admin@workhub.com` / `admin1234`
-- **Demo User**: Register a new account or use any existing employee credentials
+- **Admin**: `admin@workhub.com` / `admin`
 
 ---
 

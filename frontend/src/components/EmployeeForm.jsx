@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { createEmployee, updateEmployee } from "../services/api.js";
+import {
+  createEmployee,
+  listDepartments,
+  listJobTitles,
+  updateEmployee,
+} from "../services/api.js";
 import NeonSweepButton from "./NeonSweepButton.jsx";
 
 const empty = {
   firstName: "",
   lastName: "",
   email: "",
+  profileImage: "",
   phone: "",
   phoneCountryCode: "+1",
-  department: "",
-  position: "",
+  departmentId: "",
+  jobTitleId: "",
   address: "",
   salary: "",
   currency: "USD",
@@ -19,8 +25,10 @@ const empty = {
   password: "",
 };
 
-export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
+export default function EmployeeForm({ selected, onSaved, currentUser, theme = "light" }) {
   const [form, setForm] = useState(empty);
+  const [departments, setDepartments] = useState([]);
+  const [jobTitles, setJobTitles] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -34,10 +42,13 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
         firstName: selected.firstName || "",
         lastName: selected.lastName || "",
         email: selected.email || "",
+        profileImage: selected.profileImage || "",
         phone: selected.phone || "",
         phoneCountryCode: selected.phoneCountryCode || "+1",
-        department: selected.department || "",
-        position: selected.position || "",
+        departmentId:
+          selected.departmentId != null ? String(selected.departmentId) : "",
+        jobTitleId:
+          selected.jobTitleId != null ? String(selected.jobTitleId) : "",
         address: selected.address || "",
         salary: selected.salary ?? "",
         currency: selected.currency || "USD",
@@ -50,6 +61,46 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
       setForm(empty);
     }
   }, [selected]);
+
+  const onPhotoChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    // Simple client-side guard to avoid huge payloads.
+    const maxBytes = 2 * 1024 * 1024; // 2 MB
+    if (file.size > maxBytes) {
+      setError("Please select an image smaller than 2 MB.");
+      e.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : "";
+      setForm((f) => ({ ...f, profileImage: result }));
+    };
+    reader.onerror = () => setError("Failed to read the selected image.");
+    reader.readAsDataURL(file);
+  };
+
+  useEffect(() => {
+    let mounted = true;
+    Promise.all([listDepartments(), listJobTitles()])
+      .then(([deptRows, titleRows]) => {
+        if (!mounted) return;
+        setDepartments(deptRows || []);
+        setJobTitles(titleRows || []);
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setDepartments([]);
+        setJobTitles([]);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (error) {
@@ -74,6 +125,9 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
 
       const payload = {
         ...form,
+        departmentId:
+          form.departmentId === "" ? null : Number(form.departmentId),
+        jobTitleId: form.jobTitleId === "" ? null : Number(form.jobTitleId),
         salary: form.salary === "" ? null : Number(form.salary),
         currency: form.currency || "USD",
       };
@@ -82,7 +136,7 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
       if (!form.password) delete payload.password;
 
       if (form.id) {
-        await updateEmployee(form.id, payload);
+        await updateEmployee(form.id, payload, currentUser);
       } else {
         await createEmployee(payload);
       }
@@ -105,14 +159,45 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
     }
   };
 
+  const isEdit = !!form.id;
+  const initials = `${(form.firstName || "").trim().slice(0, 1)}${(form.lastName || "").trim().slice(0, 1)}`
+    .toUpperCase() || "U";
+
+  const labelClass = `block text-sm font-medium mb-1 ${isDark ? "text-slate-200" : "text-slate-700"}`;
+  const baseFieldClass = "rounded-lg border px-3 py-2 outline-none transition";
+  const inputClass = `w-full ${baseFieldClass} ${isDark
+    ? "border-slate-700 bg-slate-900/60 text-slate-100 placeholder:text-slate-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20"
+    : "border-slate-300 bg-white text-slate-900 placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+    }`;
+  const selectFullClass = `w-full ${baseFieldClass} ${isDark
+    ? "border-slate-700 bg-slate-900/60 text-slate-100 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20"
+    : "border-slate-300 bg-white text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+    }`;
+  const selectCompactClass = `w-24 ${baseFieldClass} ${isDark
+    ? "border-slate-700 bg-slate-900/60 text-slate-100 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20"
+    : "border-slate-300 bg-white text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+    }`;
+  const disabledInputClass = `w-full ${baseFieldClass} ${isDark
+    ? "border-slate-700 bg-slate-800/70 text-slate-400 cursor-not-allowed"
+    : "border-slate-300 bg-slate-100 text-slate-500 cursor-not-allowed"
+    }`;
+
   return (
     <div
-      className={`rounded-xl border p-4 sm:p-6 mb-6 animate-fade-in-up relative ${
-        isDark
-          ? "bg-slate-900/95 border-slate-700 shadow-[0_22px_44px_rgba(2,6,23,0.4)]"
-          : "bg-white border-slate-200 shadow-md"
-      }`}
+      className={`rounded-xl border p-4 sm:p-6 mb-6 animate-fade-in-up relative ${isDark
+        ? "bg-slate-900/95 border-slate-700 shadow-[0_22px_44px_rgba(2,6,23,0.4)]"
+        : "bg-white border-slate-200 shadow-md"
+        }`}
     >
+      {isDark && (
+        <style>{`
+          .wh-date-input { color-scheme: dark; }
+          .wh-date-input::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(1.7) contrast(1.2) !important;
+            opacity: 1 !important;
+          }
+        `}</style>
+      )}
       <h2 className={`mb-4 text-xl font-bold ${isDark ? "text-slate-100" : "text-slate-900"}`}>
         {form.id ? "Edit Employee" : "Add Employee"}
       </h2>
@@ -168,15 +253,13 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
         {/* Overlay during save */}
         {saving && (
           <div
-            className={`absolute inset-0 rounded-xl flex items-center justify-center z-10 backdrop-blur-sm ${
-              isDark ? "bg-slate-950/75" : "bg-white/80"
-            }`}
+            className={`absolute inset-0 rounded-xl flex items-center justify-center z-10 backdrop-blur-sm ${isDark ? "bg-slate-950/75" : "bg-white/80"
+              }`}
           >
             <div className="flex flex-col items-center gap-3">
               <div
-                className={`w-12 h-12 border-4 border-t-transparent rounded-full animate-spin ${
-                  isDark ? "border-cyan-400" : "border-blue-600"
-                }`}
+                className={`w-12 h-12 border-4 border-t-transparent rounded-full animate-spin ${isDark ? "border-cyan-400" : "border-blue-600"
+                  }`}
               ></div>
               <p className={`font-semibold ${isDark ? "text-slate-200" : "text-slate-700"}`}>
                 Saving...
@@ -184,11 +267,49 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
             </div>
           </div>
         )}
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+          <div
+            className={`w-20 h-20 rounded-full flex items-center justify-center font-bold text-2xl shadow-lg border overflow-hidden ${isDark ? "bg-slate-800 border-slate-700 text-slate-100" : "bg-slate-100 border-slate-200 text-slate-900"}`}
+          >
+            {form.profileImage ? (
+              <img
+                src={form.profileImage}
+                alt="Employee profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span>{initials}</span>
+            )}
+          </div>
+
+          <div className="flex-1">
+            <label
+              htmlFor="employee-profileImage"
+              className={labelClass}
+            >
+              Profile photo
+            </label>
+            <input
+              id="employee-profileImage"
+              type="file"
+              accept="image/*"
+              onChange={onPhotoChange}
+              className={`block w-full rounded-lg border px-3 py-2 text-sm outline-none transition file:mr-3 file:rounded-md file:border-0 file:px-3 file:py-1.5 file:text-sm file:font-semibold ${isDark
+                ? "border-slate-700 bg-slate-900/60 text-slate-100 file:bg-slate-800 file:text-slate-100 hover:file:bg-slate-700"
+                : "border-slate-300 bg-white text-slate-900 file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200"
+                }`}
+            />
+            <p className={`mt-1 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              PNG/JPG recommended (max 2MB)
+            </p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label
               htmlFor="employee-firstName"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              className={labelClass}
             >
               First name *
             </label>
@@ -200,13 +321,13 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
               onChange={onChange}
               required
               autoComplete="given-name"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+              className={inputClass}
             />
           </div>
           <div>
             <label
               htmlFor="employee-lastName"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              className={labelClass}
             >
               Last name *
             </label>
@@ -218,13 +339,13 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
               onChange={onChange}
               required
               autoComplete="family-name"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+              className={inputClass}
             />
           </div>
           <div>
             <label
               htmlFor="employee-email"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              className={labelClass}
             >
               Email *
             </label>
@@ -237,13 +358,14 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
               onChange={onChange}
               required
               autoComplete="email"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+              disabled={isEdit}
+              className={isEdit ? disabledInputClass : inputClass}
             />
           </div>
           <div>
             <label
               htmlFor="employee-phoneCountryCode"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              className={labelClass}
             >
               Phone
             </label>
@@ -254,7 +376,7 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
                 value={form.phoneCountryCode}
                 onChange={onChange}
                 aria-label="Country code"
-                className="w-24 rounded-lg border border-slate-300 px-2 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-sm"
+                className={`${selectCompactClass} px-2 text-sm`}
               >
                 <option value="+1">+1 (US)</option>
                 <option value="+44">+44 (UK)</option>
@@ -286,48 +408,58 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
                 onChange={onChange}
                 autoComplete="tel"
                 aria-describedby="employee-phoneCountryCode"
-                className="flex-1 rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                className={`flex-1 ${inputClass}`}
               />
             </div>
           </div>
           <div>
             <label
-              htmlFor="employee-department"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              htmlFor="employee-departmentId"
+              className={labelClass}
             >
               Department
             </label>
-            <input
-              id="employee-department"
-              name="department"
-              placeholder="Department"
-              value={form.department}
+            <select
+              id="employee-departmentId"
+              name="departmentId"
+              value={form.departmentId}
               onChange={onChange}
-              autoComplete="organization"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
-            />
+              className={selectFullClass}
+            >
+              <option value="">Select department</option>
+              {departments.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label
-              htmlFor="employee-position"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              htmlFor="employee-jobTitleId"
+              className={labelClass}
             >
-              Position
+              Job Title
             </label>
-            <input
-              id="employee-position"
-              name="position"
-              placeholder="Position"
-              value={form.position}
+            <select
+              id="employee-jobTitleId"
+              name="jobTitleId"
+              value={form.jobTitleId}
               onChange={onChange}
-              autoComplete="organization-title"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
-            />
+              className={selectFullClass}
+            >
+              <option value="">Select job title</option>
+              {jobTitles.map((j) => (
+                <option key={j.id} value={j.id}>
+                  {j.title}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="md:col-span-2">
             <label
               htmlFor="employee-address"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              className={labelClass}
             >
               Address
             </label>
@@ -338,13 +470,13 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
               value={form.address}
               onChange={onChange}
               autoComplete="street-address"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+              className={inputClass}
             />
           </div>
           <div>
             <label
               htmlFor="employee-salary"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              className={labelClass}
             >
               Salary
             </label>
@@ -355,7 +487,7 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
                 value={form.currency}
                 onChange={onChange}
                 aria-label="Currency"
-                className="w-24 rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                className={selectCompactClass}
               >
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
@@ -378,14 +510,14 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
                 value={form.salary}
                 onChange={onChange}
                 aria-describedby="employee-currency"
-                className="flex-1 rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                className={`flex-1 ${inputClass}`}
               />
             </div>
           </div>
           <div>
             <label
               htmlFor="employee-dateOfBirth"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              className={labelClass}
             >
               Date of Birth
             </label>
@@ -396,13 +528,14 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
               value={form.dateOfBirth}
               onChange={onChange}
               autoComplete="bday"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+              className={`${inputClass} wh-date-input`}
+              style={{ colorScheme: isDark ? "dark" : "light" }}
             />
           </div>
           <div>
             <label
               htmlFor="employee-hireDate"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              className={labelClass}
             >
               Hire date
             </label>
@@ -412,13 +545,14 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
               type="date"
               value={form.hireDate}
               onChange={onChange}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+              className={`${inputClass} wh-date-input`}
+              style={{ colorScheme: isDark ? "dark" : "light" }}
             />
           </div>
           <div>
             <label
               htmlFor="employee-password"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              className={labelClass}
             >
               Password {form.id && "(optional)"}
             </label>
@@ -431,14 +565,14 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
                 value={form.password}
                 onChange={onChange}
                 autoComplete={form.id ? "new-password" : "new-password"}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 pr-10 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                className={`${inputClass} pr-10`}
               />
               <NeonSweepButton
                 type="button"
                 unstyled
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                className={`absolute right-3 top-1/2 -translate-y-1/2 transition ${isDark ? "text-slate-300 hover:text-slate-100" : "text-slate-400 hover:text-slate-600"}`}
               >
                 {showPassword ? (
                   <svg
@@ -481,11 +615,12 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
           <div className="flex items-end pb-2">
             <label className="flex items-center gap-2 cursor-pointer select-none">
               <span
-                className={`relative inline-block w-5 h-5 rounded border border-slate-300 transition-colors duration-200 ${
-                  form.active
-                    ? "bg-blue-600 border-blue-600"
+                className={`relative inline-block w-5 h-5 rounded border transition-colors duration-200 ${form.active
+                  ? "bg-blue-600 border-blue-600"
+                  : isDark
+                    ? "bg-slate-900 border-slate-600"
                     : "bg-white border-slate-300"
-                }`}
+                  }`}
                 tabIndex={0}
                 role="checkbox"
                 aria-checked={form.active}
@@ -512,7 +647,7 @@ export default function EmployeeForm({ selected, onSaved, theme = "light" }) {
                   </svg>
                 )}
               </span>
-              <span className="text-sm font-medium text-slate-700">Active</span>
+              <span className={`text-sm font-medium ${isDark ? "text-slate-200" : "text-slate-700"}`}>Active</span>
             </label>
           </div>
         </div>

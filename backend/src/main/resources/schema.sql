@@ -179,5 +179,3 @@ WHERE e.job_title_id IS NULL
 	AND e.position IS NOT NULL
 	AND TRIM(e.position) <> ''
 	AND j.title = TRIM(e.position);
-
-

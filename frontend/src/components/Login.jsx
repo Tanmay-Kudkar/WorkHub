@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { login } from "../services/api.js";
-import InfoModal from "./InfoModal.jsx";
 import NeonSweepButton from "./NeonSweepButton.jsx";
 import GoogleAuthButton from "./GoogleAuthButton.jsx";
 
@@ -9,13 +8,15 @@ export default function Login({
   onSwitchToRegister,
   showGoogle = true,
   theme = "light",
+  active = true,
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastClosing, setToastClosing] = useState(false);
 
   const isDark = theme === "dark";
   const loginInputClass = isDark
@@ -40,6 +41,32 @@ export default function Login({
     ? "mb-1 block text-[13px] font-semibold text-slate-200"
     : "mb-1 block text-[13px] font-semibold text-slate-800";
 
+  useEffect(() => {
+    if (!error) {
+      setToastVisible(false);
+      setToastClosing(false);
+      return undefined;
+    }
+
+    setToastVisible(true);
+    setToastClosing(false);
+
+    const closeTimer = setTimeout(() => {
+      setToastClosing(true);
+    }, 3200);
+
+    const clearTimer = setTimeout(() => {
+      setError(null);
+      setToastVisible(false);
+      setToastClosing(false);
+    }, 3500);
+
+    return () => {
+      clearTimeout(closeTimer);
+      clearTimeout(clearTimer);
+    };
+  }, [error]);
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -60,26 +87,88 @@ export default function Login({
 
       onLoggedIn(user);
     } catch (e) {
-      setError(e.message);
-      setShowErrorModal(true);
+      setError(e?.message || "Login failed.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleRegister = () => {
-    setShowErrorModal(false);
-    onSwitchToRegister && onSwitchToRegister();
   };
 
   const showRegisterButton =
     error &&
     (error.includes("couldn't find") ||
       error.includes("join us") ||
-      error.includes("registered"));
+      error.includes("registered") ||
+      error.includes("No account found"));
+
+  const toastBaseClass =
+    "fixed top-24 sm:top-28 z-[60] right-4 sm:right-8 !w-auto max-w-[calc(100vw-2rem)] sm:max-w-[360px]";
+  const toastMotionClass = toastClosing
+    ? "opacity-0 translate-y-1"
+    : "opacity-100 translate-y-0";
+  const toastCardClass =
+    `rounded-2xl border px-4 py-3 text-sm font-semibold shadow-lg backdrop-blur ${isDark
+      ? "border-rose-400/40 bg-rose-500/10 text-rose-200"
+      : "border-rose-200 bg-rose-50 text-rose-800"
+    }`;
 
   return (
     <>
+      {active && error && toastVisible && (
+        <div
+          className={`${toastBaseClass} ${toastMotionClass} transition-all duration-300`}
+        >
+          <div role="alert" className={toastCardClass}>
+            <div className="flex items-center justify-between gap-3">
+              <p className="leading-snug">{error}</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setToastClosing(true);
+                  setTimeout(() => {
+                    setError(null);
+                    setToastVisible(false);
+                    setToastClosing(false);
+                  }, 200);
+                }}
+                className={`ml-2 inline-flex h-7 w-7 items-center justify-center rounded-full leading-none transition ${isDark
+                  ? "text-rose-200/80 hover:text-rose-100 hover:bg-rose-500/10"
+                  : "text-rose-700/80 hover:text-rose-800 hover:bg-rose-200/40"
+                  }`}
+                aria-label="Dismiss"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {showRegisterButton && (
+              <div className="mt-3">
+                <NeonSweepButton
+                  type="button"
+                  tone="emerald"
+                  size="md"
+                  onClick={onSwitchToRegister}
+                  className={registerButtonClass}
+                >
+                  Create Account
+                </NeonSweepButton>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       <form
         onSubmit={onSubmit}
         className="mx-auto w-full max-w-[372px] space-y-3.5 sm:space-y-4"
@@ -97,7 +186,10 @@ export default function Login({
             type="email"
             placeholder="username@gmail.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (error) setError(null);
+            }}
             required
             autoComplete="email"
             className={loginInputClass}
@@ -117,7 +209,10 @@ export default function Login({
               type={showPassword ? "text" : "password"}
               placeholder="Enter Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (error) setError(null);
+              }}
               required
               autoComplete="current-password"
               className={loginPasswordClass}
@@ -193,7 +288,6 @@ export default function Login({
           onAuthenticated={onLoggedIn}
           onError={(message) => {
             setError(message);
-            setShowErrorModal(true);
           }}
         />
 
@@ -212,16 +306,6 @@ export default function Login({
           </NeonSweepButton>
         </div>
       </form>
-
-      <InfoModal
-        isOpen={showErrorModal}
-        title={showRegisterButton ? "Account Not Found" : "Login Failed"}
-        message={error || ""}
-        onClose={() => setShowErrorModal(false)}
-        showRegisterButton={showRegisterButton}
-        onRegister={handleRegister}
-        theme={theme}
-      />
     </>
   );
 }
