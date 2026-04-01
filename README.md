@@ -1046,7 +1046,7 @@ erDiagram
   ATTENDANCE_RECORDS {
     bigint id PK
     bigint employee_id FK
-    date attendance_date UK_PART
+    date attendance_date
     varchar attendance_status
   }
 
@@ -1094,14 +1094,14 @@ classDiagram
   Employee <|-- AdminEmployee
   Employee <|-- StandardEmployee
 
-  Department 1 --> 0..* Employee : assigns
-  JobTitle 1 --> 0..* Employee : defines
-  Employee 1 --> 0..1 EmployeeAddress : has
-  Employee 1 --> 0..* Payroll : receives
-  Employee 1 --> 0..* AttendanceRecord : logs
-  Employee 1 --> 0..* LeaveRequest : submits
-  LeaveType 1 --> 0..* LeaveRequest : categorizes
-  AdminEmployee 1 --> 0..* LeaveRequest : approves
+  Department "1" --> "0..*" Employee : assigns
+  JobTitle "1" --> "0..*" Employee : defines
+  Employee "1" --> "0..1" EmployeeAddress : has
+  Employee "1" --> "0..*" Payroll : receives
+  Employee "1" --> "0..*" AttendanceRecord : logs
+  Employee "1" --> "0..*" LeaveRequest : submits
+  LeaveType "1" --> "0..*" LeaveRequest : categorizes
+  AdminEmployee "1" --> "0..*" LeaveRequest : approves
 ```
 
 ### Physical Entity Dictionary
