@@ -210,9 +210,9 @@ cd frontend && npm run dev
 
 | Technology     | Version | Purpose          |
 | -------------- | ------- | ---------------- |
-| **Node.js**    | 18+     | Frontend runtime |
-| **Java JDK**   | 17+     | Backend runtime  |
-| **PostgreSQL** | 14+     | Database         |
+| **ReactJs**    | 18.2    | Frontend runtime |
+| **Java JDK**   | 21     | Backend runtime  |
+| **PostgreSQL** | 18.3     | Database         |
 | **Maven**      | 3.6+    | Build tool       |
 | **Git**        | 2.0+    | Version control  |
 
