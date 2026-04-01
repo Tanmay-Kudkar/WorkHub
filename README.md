@@ -1,12 +1,12 @@
-<div align="center">
+﻿<div align="center">
 
 # 🏢 WorkHub Employee Management System
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-4.4.0-646CFF?logo=vite)](https://vitejs.dev/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.1.0-6DB33F?logo=spring)](https://spring.io/projects/spring-boot)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)](https://www.postgresql.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.3-6DB33F?logo=spring)](https://spring.io/projects/spring-boot)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.3-336791?logo=postgresql)](https://www.postgresql.org/)
 [![Deployment](https://img.shields.io/badge/Deployed%20on-Vercel%20%2B%20Render-000000?logo=vercel)](https://vercel.com/)
 
 **A modern, full-stack, interactive employee management platform featuring beautiful UI, secure authentication, and robust role-based access control for teams of any size.**
@@ -208,13 +208,13 @@ cd frontend && npm run dev
 
 ### 📋 Prerequisites
 
-| Technology   | Version | Purpose          |
-| ------------ | ------- | ---------------- |
-| **Node.js**  | 18+     | Frontend runtime |
-| **Java JDK** | 17+     | Backend runtime  |
-| **PostgreSQL** | 14+  | Database         |
-| **Maven**    | 3.6+    | Build tool       |
-| **Git**      | 2.0+    | Version control  |
+| Technology     | Version | Purpose          |
+| -------------- | ------- | ---------------- |
+| **Node.js**    | 18+     | Frontend runtime |
+| **Java JDK**   | 17+     | Backend runtime  |
+| **PostgreSQL** | 14+     | Database         |
+| **Maven**      | 3.6+    | Build tool       |
+| **Git**        | 2.0+    | Version control  |
 
 ### 🗄️ Database Setup
 
@@ -275,7 +275,6 @@ build: {
 #### Step-by-Step Vercel Setup
 
 1. **Repository Connection**:
-
    - Sign in to [Vercel](https://vercel.com/)
    - Import your GitHub repository
    - Select the `WorkHub` project
@@ -311,7 +310,6 @@ build: {
 #### Step-by-Step Render Setup
 
 1. **Service Creation**:
-
    - Create new "Web Service" on [Render](https://render.com/)
    - Connect your GitHub repository
    - Configure build settings
@@ -330,7 +328,7 @@ build: {
 
 3. **Environment Variables**:
    ```bash
-  SPRING_DATASOURCE_URL=jdbc:postgresql://your-db-host:5432/workhub_db
+   SPRING_DATASOURCE_URL=jdbc:postgresql://your-db-host:5432/workhub_db
    SPRING_DATASOURCE_USERNAME=your-db-username
    SPRING_DATASOURCE_PASSWORD=your-db-password
    SPRING_JPA_HIBERNATE_DDL_AUTO=update
@@ -347,12 +345,11 @@ build: {
 
 1. **Database Creation**:
 
-  - Create "PostgreSQL" service in Render
-   - Choose appropriate plan (Free tier available)
-   - Set database name: `workhub_db`
+- Create "PostgreSQL" service in Render
+- Choose appropriate plan (Free tier available)
+- Set database name: `workhub_db`
 
 2. **Connection Configuration**:
-
    - Copy internal database URL from Render
    - Update backend environment variables
    - Test connection from backend service
@@ -360,8 +357,8 @@ build: {
 3. **Data Migration**:
    ```bash
    # If migrating from local development
-  pg_dump -U workhub -d workhub_db > backup.sql
-  psql -h render-host -U render-user -d render-db -f backup.sql
+   pg_dump -U workhub -d workhub_db > backup.sql
+   psql -h render-host -U render-user -d render-db -f backup.sql
    ```
 
 </details>
@@ -586,20 +583,11 @@ sequenceDiagram
 
 ```css
 /* Primary Colors */
---primary-blue: #3b82f6
---primary-purple: #8b5cf6
---primary-pink: #ec4899
-
-/* Glassmorphism */
---glass-bg: rgba(255, 255, 255, 0.25)
---glass-border: rgba(255, 255, 255, 0.18)
---backdrop-blur: blur(10px)
-
-/* Status Colors */
---success: #10b981
---warning: #f59e0b
---error: #ef4444
---info: #3b82f6
+--primary-blue: #3b82f6 --primary-purple: #8b5cf6 --primary-pink: #ec4899
+  /* Glassmorphism */ --glass-bg: rgba(255, 255, 255, 0.25)
+  --glass-border: rgba(255, 255, 255, 0.18) --backdrop-blur: blur(10px)
+  /* Status Colors */ --success: #10b981 --warning: #f59e0b --error: #ef4444
+  --info: #3b82f6;
 ```
 
 ---
@@ -692,7 +680,6 @@ We welcome contributions from the community! Here's how you can help improve Wor
    ```
 
 3. **Development Guidelines**
-
    - Follow existing code style and conventions
    - Add tests for new features
    - Update documentation as needed
@@ -774,40 +761,42 @@ We're always looking for ways to improve WorkHub! Submit feature requests throug
 <table>
 <tr>
 <td align="center">
-<img src="https://github.com/parthwaghe.png" width="100px;" alt="Parth Waghe"/><br />
-<b>Parth Waghe</b><br />
-<sub>Full Stack Developer</sub><br />
-<a href="https://github.com/parthwaghe">🔗 GitHub</a>
+<img src="https://ui-avatars.com/api/?name=Tanmay+Kudkar&background=0f172a&color=ffffff&size=120" width="100px;" alt="Tanmay Kudkar"/><br />
+<b>Tanmay Kudkar</b><br />
+<sub>Core Development Team</sub>
 </td>
 <td align="center">
-<img src="https://github.com/sameerbalgar.png" width="100px;" alt="Sameer Balgar"/><br />
+<img src="https://ui-avatars.com/api/?name=Atharva+Raut&background=1d4ed8&color=ffffff&size=120" width="100px;" alt="Atharva Raut"/><br />
+<b>Atharva Raut</b><br />
+<sub>Core Development Team</sub>
+</td>
+<td align="center">
+<img src="https://ui-avatars.com/api/?name=Sameer+Balgar&background=be123c&color=ffffff&size=120" width="100px;" alt="Sameer Balgar"/><br />
 <b>Sameer Balgar</b><br />
-<sub>Backend Developer</sub><br />
-<a href="https://github.com/sameerbalgar">🔗 GitHub</a>
+<sub>Core Development Team</sub><br />
 </td>
 <td align="center">
-<img src="https://github.com/nidhishvartak.png" width="100px;" alt="Nidhish Vartak"/><br />
-<b>Nidhish Vartak</b><br />
-<sub>Frontend Developer</sub><br />
-<a href="https://github.com/nidhishvartak">🔗 GitHub</a>
+<img src="https://ui-avatars.com/api/?name=Tejas+Dhuri&background=7c3aed&color=ffffff&size=120" width="100px;" alt="Tejas Dhuri"/><br />
+<b>Tejas Dhuri</b><br />
+<sub>Core Development Team</sub>
 </td>
 <td align="center">
-<img src="https://github.com/vedikatakke.png" width="100px;" alt="Vedika Takke"/><br />
-<b>Vedika Takke</b><br />
-<sub>UI/UX Developer</sub><br />
-<a href="https://github.com/vedikatakke">🔗 GitHub</a>
+<img src="https://ui-avatars.com/api/?name=Ritikesh+Nayak&background=be123c&color=ffffff&size=120" width="100px;" alt="Ritikesh Nayak"/><br />
+<b>Ritikesh Nayak</b><br />
+<sub>Core Development Team</sub>
 </td>
 </tr>
 </table>
 
 ### 🎯 Team Responsibilities
 
-| Team Member        | Primary Focus             | Technologies                      |
-| ------------------ | ------------------------- | --------------------------------- |
-| **Parth Waghe**    | Architecture & Full Stack | React, Spring Boot, System Design |
-| **Sameer Balgar**  | Backend & Database        | Java, PostgreSQL, REST APIs       |
-| **Nidhish Vartak** | Frontend & Performance    | React, Vite, State Management     |
-| **Vedika Takke**   | UI/UX & Design Systems    | TailwindCSS, Responsive Design    |
+| Team Member        | Role             | Focus Areas                          |
+| ------------------ | ---------------- | ------------------------------------ |
+| **Tanmay Kudkar**  | Core Team Member | Project coordination and development |
+| **Atharva Raut**   | Core Team Member | Development and collaboration        |
+| **Sameer Balgar**  | Core Team Member | Backend and database contributions   |
+| **Tejas Dhuri**    | Core Team Member | Feature development and testing      |
+| **Ritikesh Nayak** | Core Team Member | UI support and integration           |
 
 </div>
 
@@ -992,3 +981,272 @@ If you find WorkHub helpful, please consider:
 _Empowering organizations through better employee management_
 
 </div>
+
+<!-- AUTO-GENERATED-EXTENDED-DOCS:START -->
+
+---
+
+## WorkHub Extended Engineering Compendium (Auto-Generated)
+
+> Generated from current schema and controller sources for a deeply detailed, PDF-friendly project manual.
+
+### Verified Inputs
+
+- Schema references: database/schema.sql and backend/src/main/resources/schema.sql
+- API references: backend/src/main/java/com/workhub/backend/controller/\*
+- Frontend shell references: frontend/src/main.jsx and frontend/src/App.jsx
+
+### ER Diagram (Physical Database Model: 8 Tables)
+
+```mermaid
+erDiagram
+  DEPARTMENTS ||--o{ EMPLOYEES : department_id
+  JOB_TITLES ||--o{ EMPLOYEES : job_title_id
+  EMPLOYEES ||--|| EMPLOYEE_ADDRESSES : employee_id_unique
+  EMPLOYEES ||--o{ PAYROLL : employee_id
+  EMPLOYEES ||--o{ ATTENDANCE_RECORDS : employee_id
+  EMPLOYEES ||--o{ LEAVE_REQUESTS : employee_id_requester
+  LEAVE_TYPES ||--o{ LEAVE_REQUESTS : leave_type_id
+  EMPLOYEES ||--o{ LEAVE_REQUESTS : approved_by
+
+  DEPARTMENTS {
+    bigint id PK
+    varchar name UK
+  }
+
+  JOB_TITLES {
+    bigint id PK
+    varchar title UK
+  }
+
+  EMPLOYEES {
+    bigint id PK
+    varchar first_name
+    varchar last_name
+    varchar email UK
+    bigint department_id FK
+    bigint job_title_id FK
+    varchar role
+    timestamp created_at
+  }
+
+  EMPLOYEE_ADDRESSES {
+    bigint id PK
+    bigint employee_id FK,UK
+    text address_line
+  }
+
+  PAYROLL {
+    bigint id PK
+    bigint employee_id FK
+    decimal salary
+    date pay_date
+  }
+
+  ATTENDANCE_RECORDS {
+    bigint id PK
+    bigint employee_id FK
+    date attendance_date UK_PART
+    varchar attendance_status
+  }
+
+  LEAVE_TYPES {
+    bigint id PK
+    varchar leave_code UK
+    integer annual_quota_days
+  }
+
+  LEAVE_REQUESTS {
+    bigint id PK
+    bigint employee_id FK
+    bigint leave_type_id FK
+    bigint approved_by FK
+    varchar approval_status
+  }
+```
+
+### EER Diagram (Conceptual Model + Role Specialization)
+
+```mermaid
+classDiagram
+  class Employee {
+    +id
+    +email
+    +role
+    +active
+  }
+  class AdminEmployee {
+    +approveLeaveRequest()
+    +viewAllEmployeeRecords()
+  }
+  class StandardEmployee {
+    +requestLeave()
+    +checkIn()
+  }
+  class Department
+  class JobTitle
+  class EmployeeAddress
+  class Payroll
+  class AttendanceRecord
+  class LeaveType
+  class LeaveRequest
+
+  Employee <|-- AdminEmployee
+  Employee <|-- StandardEmployee
+
+  Department 1 --> 0..* Employee : assigns
+  JobTitle 1 --> 0..* Employee : defines
+  Employee 1 --> 0..1 EmployeeAddress : has
+  Employee 1 --> 0..* Payroll : receives
+  Employee 1 --> 0..* AttendanceRecord : logs
+  Employee 1 --> 0..* LeaveRequest : submits
+  LeaveType 1 --> 0..* LeaveRequest : categorizes
+  AdminEmployee 1 --> 0..* LeaveRequest : approves
+```
+
+### Physical Entity Dictionary
+
+#### 1) departments
+
+- Purpose: Department master data for normalization.
+  | Column | Type | Constraints | Notes |
+  |---|---|---|---|
+  | id | BIGSERIAL | PK | Department surrogate key |
+  | name | VARCHAR(100) | UNIQUE, NOT NULL | Canonical department name |
+  | department_name | VARCHAR(100) | Legacy compatibility | Backfill helper column |
+
+#### 2) job_titles
+
+- Purpose: Job title master data for normalization.
+  | Column | Type | Constraints | Notes |
+  |---|---|---|---|
+  | id | BIGSERIAL | PK | Job title surrogate key |
+  | title | VARCHAR(100) | UNIQUE, NOT NULL | Canonical title |
+  | title_name | VARCHAR(100) | Legacy compatibility | Backfill helper column |
+
+#### 3) employees
+
+- Purpose: Core employee identity, profile, auth, and role context.
+  | Column | Type | Constraints | Notes |
+  |---|---|---|---|
+  | id | BIGSERIAL | PK | Employee key |
+  | first_name | VARCHAR(255) | NOT NULL | Given name |
+  | last_name | VARCHAR(255) | NOT NULL | Surname |
+  | email | VARCHAR(255) | UNIQUE, NOT NULL | Login identity |
+  | phone | VARCHAR(255) | NULL | Contact number |
+  | phone_country_code | VARCHAR(5) | NULL | Dialing code |
+  | department | VARCHAR(255) | Legacy | Legacy text column |
+  | position | VARCHAR(255) | Legacy | Legacy text column |
+  | address | VARCHAR(255) | Legacy | Legacy text column |
+  | profile_image | TEXT | NULL | URI/base64 payload |
+  | salary | NUMERIC(19,2) | NULL | Current salary snapshot |
+  | currency | VARCHAR(3) | NULL | ISO-4217 code |
+  | date_of_birth | DATE | NULL | DOB |
+  | hire_date | DATE | NULL | Employment start date |
+  | department_id | BIGINT | FK | References departments.id |
+  | job_title_id | BIGINT | FK | References job_titles.id |
+  | active | BOOLEAN | DEFAULT TRUE | Account state |
+  | role | VARCHAR(255) | DEFAULT USER | ADMIN or USER |
+  | password_hash | VARCHAR(255) | NULL | Secure hash |
+  | created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Created time |
+  | last_login_at | TIMESTAMP | NULL | Last auth success |
+
+#### 4) employee_addresses
+
+- Purpose: Normalized one-to-one structured address extension.
+  | Column | Type | Constraints | Notes |
+  |---|---|---|---|
+  | id | BIGSERIAL | PK | Address key |
+  | employee_id | BIGINT | FK, UNIQUE, NOT NULL | One address per employee |
+  | address_line | TEXT | NULL | Line address |
+  | city | VARCHAR(50) | NULL | City |
+  | state | VARCHAR(50) | NULL | State or Province |
+  | pincode | VARCHAR(10) | NULL | Postal code |
+
+#### 5) payroll
+
+- Purpose: Payroll ledger rows per employee and pay date.
+  | Column | Type | Constraints | Notes |
+  |---|---|---|---|
+  | id | BIGSERIAL | PK | Payroll key |
+  | employee_id | BIGINT | FK, NOT NULL | Employee reference |
+  | salary | DECIMAL(10,2) | NULL | Base pay |
+  | bonus | DECIMAL(10,2) | NULL | Bonus amount |
+  | deductions | DECIMAL(10,2) | NULL | Deduction amount |
+  | pay_date | DATE | NULL | Payroll date |
+
+#### 6) attendance_records
+
+- Purpose: Daily attendance and time-stamp tracking.
+  | Column | Type | Constraints | Notes |
+  |---|---|---|---|
+  | id | BIGSERIAL | PK | Attendance key |
+  | employee_id | BIGINT | FK, NOT NULL | Employee reference |
+  | attendance_date | DATE | UNIQUE(employee_id, attendance_date) | One row per day |
+  | check_in_time | TIMESTAMP | NULL | Check-in event time |
+  | check_out_time | TIMESTAMP | NULL | Check-out event time |
+  | attendance_status | VARCHAR(20) | DEFAULT NOT_MARKED | Present or absent-like state |
+
+#### 7) leave_types
+
+- Purpose: Leave policy master data and annual quota definitions.
+  | Column | Type | Constraints | Notes |
+  |---|---|---|---|
+  | id | BIGSERIAL | PK | Leave type key |
+  | leave_code | VARCHAR(20) | UNIQUE, NOT NULL | CL or SL or EL etc. |
+  | leave_name | VARCHAR(80) | NOT NULL | Human-readable label |
+  | annual_quota_days | INTEGER | NOT NULL | Yearly limit |
+
+#### 8) leave_requests
+
+- Purpose: Leave workflow transaction table with approval metadata.
+  | Column | Type | Constraints | Notes |
+  |---|---|---|---|
+  | id | BIGSERIAL | PK | Leave request key |
+  | employee_id | BIGINT | FK, NOT NULL | Requester employee |
+  | leave_type_id | BIGINT | FK, NOT NULL | Leave category |
+  | start_date | DATE | NOT NULL | Leave start |
+  | end_date | DATE | NOT NULL | Leave end |
+  | reason | TEXT | NULL | Optional notes |
+  | approval_status | VARCHAR(20) | DEFAULT PENDING | PENDING APPROVED REJECTED |
+  | applied_on | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Applied timestamp |
+  | approved_on | TIMESTAMP | NULL | Decision timestamp |
+  | approved_by | BIGINT | FK, NULL | Approver employee id |
+
+### API Endpoint Master Table
+
+|   # | Method | Endpoint                                                 | Access     | Function                 |
+| --: | ------ | -------------------------------------------------------- | ---------- | ------------------------ |
+|   1 | POST   | /api/auth/login                                          | Public     | Password login           |
+|   2 | POST   | /api/auth/google                                         | Public     | Google token login       |
+|   3 | GET    | /api/auth/google/start                                   | Public     | Start OAuth flow         |
+|   4 | GET    | /api/auth/google/callback                                | Public     | OAuth callback           |
+|   5 | GET    | /api/auth/google/exchange                                | Public     | Exchange callback token  |
+|   6 | GET    | /api/employees                                           | Admin/Self | List employee data       |
+|   7 | GET    | /api/employees/{id}                                      | Admin/Self | Get employee profile     |
+|   8 | POST   | /api/employees                                           | Public     | Register/create employee |
+|   9 | PUT    | /api/employees/{id}                                      | Admin/Self | Update employee          |
+|  10 | DELETE | /api/employees/{id}                                      | Admin      | Delete employee          |
+|  11 | GET    | /api/admin/employees                                     | Admin      | Admin list users         |
+|  12 | GET    | /api/admin/employees/{id}                                | Admin      | Admin view user          |
+|  13 | DELETE | /api/admin/employees/{id}                                | Admin      | Admin delete user        |
+|  14 | GET    | /api/departments                                         | All        | Department lookup        |
+|  15 | GET    | /api/job-titles                                          | All        | Job title lookup         |
+|  16 | GET    | /api/dbms/overview                                       | All        | DB module summary        |
+|  17 | GET    | /api/dbms/table/{tableName}                              | All        | Generic table preview    |
+|  18 | GET    | /api/dbms/leave-types                                    | All        | Leave type list          |
+|  19 | GET    | /api/dbms/employees/{employeeId}/leave-requests          | Admin/Self | List leave requests      |
+|  20 | POST   | /api/dbms/employees/{employeeId}/leave-requests          | Admin/Self | Create leave request     |
+|  21 | GET    | /api/dbms/admin/leave-requests                           | Admin      | Pending leave queue      |
+|  22 | GET    | /api/dbms/admin/employees/{employeeId}/leave-requests    | Admin      | Employee leave history   |
+|  23 | POST   | /api/dbms/admin/leave-requests/{leaveRequestId}/decision | Admin      | Approve/reject leave     |
+|  24 | GET    | /api/dbms/admin/employees/{employeeId}/attendance        | Admin      | Attendance history       |
+|  25 | GET    | /api/dbms/employees/{employeeId}/attendance/today        | Admin/Self | Today attendance state   |
+|  26 | POST   | /api/dbms/employees/{employeeId}/attendance/check-in     | Admin/Self | Check in                 |
+|  27 | POST   | /api/dbms/employees/{employeeId}/attendance/check-out    | Admin/Self | Check out                |
+|  28 | GET    | /api/dbms/employees/{employeeId}/address                 | Admin/Self | Read address             |
+|  29 | POST   | /api/dbms/employees/{employeeId}/address                 | Admin/Self | Upsert address           |
+|  30 | GET    | /api/dbms/employees/{employeeId}/payroll                 | Admin/Self | Employee payroll         |
+|  31 | GET    | /api/dbms/admin/employees/{employeeId}/payroll           | Admin      | Payroll for employee     |
+|  32 | POST   | /api/dbms/employees/{employeeId}/payroll                 | Admin/Self | Create payroll record    |
+
