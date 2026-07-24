@@ -180,8 +180,11 @@ export const ServerStateProvider = ({ children }) => {
       try {
         const response = await originalFetch(...args);
 
-        // Catch 500 (Vite ECONNREFUSED proxy error), 502, 503, 504 (Gateway Timeout / Cold Start)
-        if (response.status >= 500 || [500, 502, 503, 504].includes(response.status)) {
+        // Catch Gateway Timeout / Cold Start (502, 503, 504, 522). In local dev, Vite proxy ECONNREFUSED is 500.
+        const isColdStartError = [502, 503, 504, 522].includes(response.status) || 
+                                 (import.meta.env.DEV && response.status === 500);
+
+        if (isColdStartError) {
           triggerServerWakeup();
 
           return new Promise((resolve) => {
@@ -264,8 +267,19 @@ export const ServerStateProvider = ({ children }) => {
       }
     };
 
+    const handlePageShow = (event) => {
+      // If page is restored from bfcache, force clear the wakeup screen to prevent it from being stuck
+      if (event.persisted) {
+        isWakingUpRef.current = false;
+        setIsWakingUp(false);
+        setIsBackendReady(false);
+        setIsServerLive(false);
+      }
+    };
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("online", handleOnline);
+    window.addEventListener("pageshow", handlePageShow);
     window.addEventListener("mousemove", handleUserInteraction, { passive: true });
     window.addEventListener("keydown", handleUserInteraction, { passive: true });
     window.addEventListener("touchstart", handleUserInteraction, { passive: true });
@@ -273,6 +287,7 @@ export const ServerStateProvider = ({ children }) => {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("online", handleOnline);
+      window.removeEventListener("pageshow", handlePageShow);
       window.removeEventListener("mousemove", handleUserInteraction);
       window.removeEventListener("keydown", handleUserInteraction);
       window.removeEventListener("touchstart", handleUserInteraction);

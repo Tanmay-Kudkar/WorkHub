@@ -1,1247 +1,493 @@
-<div align="center">
+<h1 align="center">🏢 WorkHub Employee Management System</h1>
 
-# 🏢 WorkHub Employee Management System
+<p align="center">
+  A production-ready, full-stack enterprise workforce management platform. Built with a modern React 18 frontend and a robust Spring Boot 3 Java backend, WorkHub features multi-tier role-based access control, Google OAuth 2.0 integration, real-time department and job title lookups, dynamic database scheme conversion, and an enterprise cloud cold-start resilience layer.
+</p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-4.4.0-646CFF?logo=vite)](https://vitejs.dev/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.3-6DB33F?logo=spring)](https://spring.io/projects/spring-boot)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.3-336791?logo=postgresql)](https://www.postgresql.org/)
-[![Deployment](https://img.shields.io/badge/Deployed%20on-Vercel%20%2B%20Render-000000?logo=vercel)](https://vercel.com/)
+## Tech Stack Used
 
-**A modern, full-stack, interactive employee management platform featuring beautiful UI, secure authentication, and robust role-based access control for teams of any size.**
-
-[🚀 Live Demo](https://workhub-frontend.vercel.app/) • [📖 Documentation](#documentation) • [🐛 Report Bug](https://github.com/Tanmay-Kudkar/WorkHub/issues) • [💡 Request Feature](https://github.com/Tanmay-Kudkar/WorkHub/issues)
-
-</div>
-
----
-
-## 📋 Table of Contents
-
-- [🌟 Overview](#-overview)
-- [✨ Key Features](#-key-features)
-- [🛠 Technology Stack](#-technology-stack)
-- [🏗 System Architecture](#-system-architecture)
-- [⚡ Quick Start](#-quick-start)
-- [🔧 Installation Guide](#-installation-guide)
-- [🌐 Deployment](#-deployment)
-- [📖 API Documentation](#-api-documentation)
-- [🎨 UI/UX Showcase](#-uiux-showcase)
-- [🧪 Testing](#-testing)
-- [🤝 Contributing](#-contributing)
-- [👥 Team](#-team)
-- [📄 License](#-license)
-- [🆘 Support](#-support)
-
----
-
-## 🌟 Overview
-
-WorkHub is a cutting-edge employee management system designed to streamline HR operations and enhance organizational efficiency. Built with modern web technologies, it offers an intuitive interface for managing employee data, user authentication, and role-based access control.
-
-### 🎯 Project Goals
-
-- **Simplify HR Operations**: Streamline employee data management
-- **Enhance Security**: Implement robust authentication and authorization
-- **Improve User Experience**: Provide an intuitive, responsive interface
-- **Ensure Scalability**: Built to handle growing organizational needs
-
-### 🏆 Project Status
-
-- ✅ **Production Ready**: Fully deployed and operational
-- ✅ **Mobile Responsive**: Works seamlessly across all devices
-- ✅ **Performance Optimized**: Fast loading and smooth interactions
-- ✅ **Security Hardened**: Secure authentication and data protection
-
----
-
-## ✨ Key Features
-
-<table>
-<tr>
-<td width="50%">
-
-### 🔐 Authentication & Security
-
-- **Secure Login/Register** with password hashing
-- **Role-based Access Control** (Admin/User)
-- **Session Management** with persistent login
-- **Password Validation** and security enforcement
-
-### 👥 Employee Management
-
-- **Complete CRUD Operations** for employee profiles
-- **Advanced Search & Filtering** by multiple criteria
-- **Bulk Operations** for efficient management
-- **Data Export** capabilities
-
-</td>
-<td width="50%">
-
-### 🎨 Modern UI/UX
-
-- **Glassmorphism Design** with animated gradients
-- **Responsive Layout** optimized for all devices
-- **Interactive Modals** with smooth animations
-- **Real-time Feedback** and loading states
-
-### 🚀 Performance Features
-
-- **Optimized Bundle Size** with Vite build system
-- **Lazy Loading** for improved performance
-- **Caching Strategies** for faster data access
-- **Progressive Enhancement** for better UX
-
-</td>
-</tr>
+<table align="center">
+  <tr>
+    <td align="center" width="130">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" width="90" height="90" /><br />
+      <strong>React 18.2.0</strong>
+    </td>
+    <td align="center" width="130">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg" alt="Vite" width="90" height="90" /><br />
+      <strong>Vite 5.4.21</strong>
+    </td>
+    <td align="center" width="130">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java 17" width="90" height="90" /><br />
+      <strong>Java OpenJDK 17</strong>
+    </td>
+    <td align="center" width="130">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" alt="Spring Boot" width="90" height="90" /><br />
+      <strong>Spring Boot 3.3.3</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="130">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL" width="90" height="90" /><br />
+      <strong>PostgreSQL 15+</strong>
+    </td>
+    <td align="center" width="130">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google OAuth 2.0" width="90" height="90" /><br />
+      <strong>Google OAuth 2.0</strong>
+    </td>
+    <td align="center" width="130">
+      <img src="https://skillicons.dev/icons?i=css" alt="Vanilla CSS Design System" width="90" height="90" /><br />
+      <strong>Glassmorphism CSS3</strong>
+    </td>
+    <td align="center" width="130">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker & Compose" width="90" height="90" /><br />
+      <strong>Docker Compose v2</strong>
+    </td>
+  </tr>
 </table>
 
----
+## Documentation Index
 
-## 🛠 Technology Stack
-
-<div align="center">
-
-### Frontend Technologies
-
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-
-### Backend Technologies
-
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-F2F4F9?style=for-the-badge&logo=spring-boot)
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
-![Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
-
-### Deployment & DevOps
-
-![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
-![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-
-</div>
+- [1. Executive Summary](#1-executive-summary)
+- [2. Product Scope and Capabilities](#2-product-scope-and-capabilities)
+- [3. Architecture and System Design](#3-architecture-and-system-design)
+- [4. Technology Stack and Versions](#4-technology-stack-and-versions)
+- [5. Domain Model and Data Schema](#5-domain-model-and-data-schema)
+- [6. Real-World Use Cases](#6-real-world-use-cases)
+- [7. Core Problems Solved](#7-core-problems-solved)
+- [8. API Reference & Endpoints](#8-api-reference--endpoints)
+- [9. Cloud Deployment & Render Wakeup UI](#9-cloud-deployment--render-wakeup-ui)
+- [10. Local Development Setup](#10-local-development-setup)
+- [11. Repository Layout](#11-repository-layout)
 
 ---
 
-## 🏗 System Architecture
+## 1. Executive Summary
+
+**Project Aim**: To construct an enterprise-grade Employee Management System (WorkHub) that bridges modern frontend UX with resilient cloud backend infrastructure. WorkHub simplifies HR workflows, employee profile administration, role-based security (ADMIN/USER), department lookups, and salary tracking while seamlessly handling cloud cold starts (such as Render.com free-tier spin-downs) with zero data loss or user disruption.
+
+### At a Glance
+
+| Item | Value |
+|---|---|
+| Frontend Client | React 18 + Vite 5 + Glassmorphism CSS (`frontend/`) |
+| Backend API | Spring Boot 3.3.3 + Java 17 + Spring Data JPA (`backend/`) |
+| Connection Pool | HikariCP (optimized for cloud connection limits) |
+| Database | PostgreSQL 15+ |
+| Authentication | Native Password Hashing (BCrypt) + Google OAuth 2.0 |
+| Architecture | Decoupled REST Architecture (Vercel Frontend + Render Backend) |
+
+---
+
+## 2. Product Scope and Capabilities
+
+WorkHub serves **HR Administrators**, **Engineering Leads**, and **Team Members** needing a fast, secure, and intuitive workforce dashboard.
+
+### 🌟 Key Codebase Features
+- **Role-Based Access Control (RBAC)**: Enforces `ADMIN` and `USER` permissions across view, edit, search, and delete endpoints.
+- **Cloud Cold-Start Resilience Layer**: Full-screen glassmorphism overlay with a non-looping 0–100% linear fluid progress bar, 500ms `/api/health` polling, request queueing, and vector verification mark animation.
+- **Dynamic Database Scheme Converter**: Custom Spring `@Configuration` (`DatabaseConfig.java`) that automatically converts `postgres://` or `postgresql://` environment URLs into valid JDBC strings, strips inline `user:password@` from host strings to prevent JDBC driver port parsing errors, and populates HikariCP credentials.
+- **Google OAuth 2.0 Integration**: Native Google Sign-In with ID Token validation, OAuth state management, and strict database duplicate email checks to prevent account collisions.
+- **Universal Body Scroll Locking**: Custom React hook (`useLockBodyScroll`) that locks background scrolling on all active modals (`ServerWakeupScreen`, `EmployeeDetailModal`, `AccessDeniedModal`, `ConfirmDialog`, `InfoModal`, `AuthPanel`).
+- **Comprehensive Employee Operations**: Full CRUD management with search, department/job title filtering, active status toggles, salary & currency tracking, and profile image support.
+
+#### 🔍 Deep-Dive: Cloud Cold-Start Initialization Overlay
+- **Problem Statement**: Cloud container instances on free-tier platforms spin down after periods of inactivity. Initial inbound requests take 15–40 seconds to complete instance initialization, returning preliminary gateway timeouts (HTTP 504) or connection exceptions.
+- **Decoupled Interceptor Queue**: The frontend `ServerStateContext` implements a global `fetch` interceptor. When an API call encounters a network exception or HTTP 500, 502, 503, or 504 gateway response, the request promise is **suspended and buffered in an internal queue**.
+- **Linear Progress Bar & Verification State**:
+  - While awaiting instance initialization, progress advances predictably from **0% → 95%**.
+  - Upon receiving HTTP **200 OK** from `/api/health`, progress interpolates linearly to **100%** over **2.0 seconds** (`Server Connected! 100%`).
+  - The 100% state **holds for 800ms** to visually confirm load completion.
+  - The interface transitions to a stroke-drawn vector verification mark (*"Thanks for waiting, our server is live!"*) displaying for **3.4 seconds**.
+  - All buffered requests automatically execute in sequence without requiring page reloads or route resets.
+- **Continuous Health Heartbeat**: An 8-second background timer and tab `visibilitychange` listener detect backend sleep status prior to user interaction.
+
+##### 📊 Initialization State Machine
+```mermaid
+stateDiagram-v2
+    [*] --> IdleState: Backend Active (200 OK)
+    IdleState --> InterceptedError: Gateway Timeout (504) / Connection Error
+    InterceptedError --> WakeupOverlayActive: Buffer Request Queue & Display Overlay
+    
+    state WakeupOverlayActive {
+        [*] --> SteadyProgress: Asynchronous Progress Increment (0% to 95%)
+        SteadyProgress --> PollingHealth: Health Check Ping (500ms Interval)
+        PollingHealth --> SteadyProgress: Instance Initializing
+        PollingHealth --> BackendConnected: /api/health Responds 200 OK
+        
+        BackendConnected --> SmoothCompletion: Linear Interpolation to 100% (2.0s)
+        SmoothCompletion --> HoldState: Completion State Delay (800ms)
+        HoldState --> SuccessVerificationState: Render Verification Indicator (3.4s)
+    }
+    
+    WakeupOverlayActive --> QueueExecution: Replay Intercepted Request Queue
+    QueueExecution --> IdleState: Resume Active Session (Zero Page Reload)
+```
+
+#### 🔍 Deep-Dive: Dynamic Database URL Parsing & Scheme Converter
+- **Automatic URL Parsing**: `DatabaseConfig.java` parses `DATABASE_URL`, `SPRING_DATASOURCE_URL`, or `DB_URL` at runtime.
+- **Driver Compatibility**: PostgreSQL JDBC driver throws `WARN: JDBC URL invalid port number` if `user:pass@` is present in the `jdbc:postgresql://` host string. Our parser extracts `username` and `password`, strips `user:pass@` from the host, and passes clean parameters directly to HikariCP.
+- **Zero Configuration Hardcoding**: Fully dynamic across local PostgreSQL, Docker Compose, AlwaysData, and Render.com.
+
+##### ⚙️ Database URL Parsing Pipeline
+```mermaid
+flowchart TD
+    A["Raw Environment Variable (DATABASE_URL)"] --> B{"Starts with postgres:// or postgresql:// ?"}
+    B -- Yes --> C["Convert Scheme to jdbc:postgresql://"]
+    B -- No --> D["Inspect URI String"]
+    
+    C --> E["Extract User Info (user:password@)"]
+    D --> E
+    
+    E --> F["Extract Username & Password"]
+    E --> G["Strip user:password@ from Host String"]
+    
+    F --> H["Set HikariCP Credentials (setUsername / setPassword)"]
+    G --> I["Format Clean Host JDBC URL (jdbc:postgresql://host:port/dbname)"]
+    
+    H --> J["Initialize HikariDataSource Pool"]
+    I --> J
+```
+
+#### 🔍 Deep-Dive: Google OAuth 2.0 & Account Safeguards
+- **ID Token Exchange**: Validates Google ID tokens against backend `WORKHUB_GOOGLE_CLIENT_ID`.
+- **Database Collision Prevention**: `EmployeeService.java` checks if an email is already registered. If an account exists without a password hash (created via Google OAuth), registration or password login attempts return:
+  > *"This email is registered using Google Sign-In. Please click 'Continue with Google' to sign in."*
+
+##### 🔒 Authentication & Account Safeguard Decision Flow
+```mermaid
+flowchart TD
+    A["User Auth Request"] --> B{"Auth Provider?"}
+    
+    B -- Google OAuth --> C["Verify Google ID Token"]
+    C --> D{"Email Exists in DB?"}
+    D -- Yes --> E["Update last_login_at & Issue Session"]
+    D -- No --> F["Create New Employee (password_hash = NULL)"] --> E
+    
+    B -- Password Registration / Login --> G{"Email Exists in DB?"}
+    G -- No --> H["Create Employee with BCrypt Hash"]
+    G -- Yes --> I{"is password_hash NULL?"}
+    I -- Yes --> J["Reject Password Auth & Display OAuth Warning"]
+    I -- No --> K["Verify BCrypt Password Match"]
+    K -- Match --> E
+    K -- Mismatch --> L["Return 401 Invalid Credentials"]
+```
+
+---
+
+## 3. Architecture and System Design
+
+### 3.1 System Context
 
 ```mermaid
-graph TB
-    subgraph "Frontend - Vercel"
-        A[React + Vite App]
-        B[TailwindCSS UI]
-        C[State Management]
-    end
-
-    subgraph "Backend - Render"
-        D[Spring Boot API]
-        E[Authentication Service]
-        F[Employee Controller]
-    end
-
-    subgraph "Database - Render PostgreSQL"
-        G[Employee Data]
-        H[User Credentials]
-    end
-
-    A --> D
-    B --> A
-    C --> A
-    D --> E
-    D --> F
-    E --> H
-    F --> G
+flowchart LR
+    A["React 18 Dashboard (frontend/)"] -->|REST / JSON| B["Spring Boot 3 API (backend/)"]
+    B -->|HikariCP Pool| C[("PostgreSQL DB")]
+    B -->|OAuth 2.0 ID Token| D["Google Auth API"]
+    A -->|500ms Polling| E["/api/health Endpoint"]
 ```
 
-### 🔄 Data Flow
-
-1. **User Interaction**: React components handle user interactions
-2. **API Requests**: Frontend makes REST API calls to Spring Boot backend
-3. **Authentication**: JWT-based authentication with role verification
-4. **Data Processing**: Backend processes requests and validates data
-5. **Database Operations**: PostgreSQL handles data persistence
-6. **Response**: JSON responses sent back to frontend for UI updates
-
----
-
-## ⚡ Quick Start
-
-### 🚀 One-Click Deploy
-
-Deploy your own instance of WorkHub:
-
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/Tanmay-Kudkar/WorkHub)
-
-### 💻 Local Development
-
-```bash
-# Clone the repository
-git clone https://github.com/Tanmay-Kudkar/WorkHub.git
-cd WorkHub
-
-# Install dependencies
-cd frontend && npm install
-cd ../backend && mvn clean install
-
-# Start development servers
-# Terminal 1: Backend
-cd backend && mvn spring-boot:run
-
-# Terminal 2: Frontend
-cd frontend && npm run dev
-```
-
-**🎉 Access the application at `http://localhost:5173`**
-
-### 🔑 Admin Login Credentials
-
-- **Admin**: `admin@workhub.com` / `admin`
-
----
-
-## 🔧 Installation Guide
-
-### 📋 Prerequisites
-
-| Technology     | Version | Purpose          |
-| -------------- | ------- | ---------------- |
-| **ReactJs**    | 18.2    | Frontend runtime |
-| **Java JDK**   | 21     | Backend runtime  |
-| **PostgreSQL** | 18.3     | Database         |
-| **Maven**      | 3.6+    | Build tool       |
-| **Git**        | 2.0+    | Version control  |
-
-### 🗄️ Database Setup
-
-1. **Create PostgreSQL Database**:
-
-```sql
-CREATE DATABASE workhub_db;
-CREATE USER workhub WITH PASSWORD 'ChangeMe_S3cure!';
-GRANT ALL PRIVILEGES ON DATABASE workhub_db TO workhub;
-```
-
-2. **Configure Connection**:
-   Update `backend/src/main/resources/application.properties`:
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/workhub_db
-spring.datasource.username=workhub
-spring.datasource.password=ChangeMe_S3cure!
-spring.jpa.hibernate.ddl-auto=create-drop
-spring.jpa.show-sql=true
-```
-
-### 🎨 Frontend Configuration
-
-1. **Environment Variables** (`frontend/.env`):
-
-```bash
-VITE_API_BASE_URL=http://localhost:8080
-```
-
-2. **Vite Configuration** (already configured in `vite.config.js`):
-
-```javascript
-// ...existing code...
-build: {
-  outDir: "build", // Matches deployment settings
-},
-// ...existing code...
-```
-
-### ⚙️ Backend Configuration
-
-**Key Configuration Files**:
-
-- `src/main/resources/application.properties` - Database and server config
-- `pom.xml` - Maven dependencies and build configuration
-- Dockerfile - Container configuration for deployment
-
----
-
-## 🌐 Deployment
-
-### 🚀 Production Deployment Guide
-
-<details>
-<summary><b>📱 Frontend Deployment (Vercel)</b></summary>
-
-#### Step-by-Step Vercel Setup
-
-1. **Repository Connection**:
-   - Sign in to [Vercel](https://vercel.com/)
-   - Import your GitHub repository
-   - Select the `WorkHub` project
-
-2. **Build Configuration**:
-
-   ```json
-   {
-     "framework": "vite",
-     "rootDirectory": "frontend",
-     "buildCommand": "npm run build",
-     "outputDirectory": "build",
-     "installCommand": "npm install",
-     "nodeVersion": "18.x"
-   }
-   ```
-
-3. **Environment Variables**:
-
-   ```bash
-   VITE_API_BASE_URL=https://workhub-backend-y081.onrender.com
-   ```
-
-4. **Custom Domain** (Optional):
-   - Add your custom domain in Vercel dashboard
-   - Configure DNS settings with your domain provider
-
-</details>
-
-<details>
-<summary><b>🖥️ Backend Deployment (Render)</b></summary>
-
-#### Step-by-Step Render Setup
-
-1. **Service Creation**:
-   - Create new "Web Service" on [Render](https://render.com/)
-   - Connect your GitHub repository
-   - Configure build settings
-
-2. **Build Configuration**:
-
-   ```yaml
-   name: workhub-backend
-   region: oregon
-   branch: main
-   rootDir: backend
-   runtime: java
-   buildCommand: mvn clean install -DskipTests
-   startCommand: java -jar target/*.jar
-   ```
-
-3. **Environment Variables**:
-   ```bash
-   DATABASE_URL=postgresql://your-db-username:your-db-password@your-db-host:5432/workhub_db
-   SPRING_JPA_HIBERNATE_DDL_AUTO=update
-   PORT=8080
-   ```
-
-</details>
-
-<details>
-<summary><b>🗄️ Database Deployment (Render PostgreSQL)</b></summary>
-
-#### PostgreSQL Database Setup
-
-1. **Database Creation**:
-
-- Create "PostgreSQL" service in Render
-- Choose appropriate plan (Free tier available)
-- Set database name: `workhub_db`
-
-2. **Connection Configuration**:
-   - Copy internal database URL from Render
-   - Update backend environment variables
-   - Test connection from backend service
-
-3. **Data Migration**:
-   ```bash
-   # If migrating from local development
-   pg_dump -U workhub -d workhub_db > backup.sql
-   psql -h render-host -U render-user -d render-db -f backup.sql
-   ```
-
-</details>
-
-### 🐳 Docker Deployment (Alternative)
-
-<details>
-<summary><b>Docker Compose Configuration</b></summary>
-
-Create `docker-compose.yml` in project root:
-
-```yaml
-version: "3.8"
-services:
-  # Frontend Service
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    environment:
-      - VITE_API_BASE_URL=http://localhost:8080
-    depends_on:
-      - backend
-    networks:
-      - workhub-network
-
-  # Backend Service
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      - DATABASE_URL=postgresql://workhub:workhub123@db:5432/workhub_db
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-    depends_on:
-      - db
-    networks:
-      - workhub-network
-
-  # Database Service
-  db:
-    image: postgres:16
-    environment:
-      - POSTGRES_DB=workhub_db
-      - POSTGRES_USER=workhub
-      - POSTGRES_PASSWORD=workhub123
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
-    networks:
-      - workhub-network
-
-volumes:
-  postgres_data:
-
-networks:
-  workhub-network:
-    driver: bridge
-```
-
-**Deploy with Docker**:
-
-```bash
-# Build and start all services
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Scale services (if needed)
-docker-compose up -d --scale backend=2
-```
-
-</details>
-
----
-
-## 📖 API Documentation
-
-### 🔗 Endpoint Overview
-
-| Method   | Endpoint               | Description         | Auth Required |
-| -------- | ---------------------- | ------------------- | ------------- |
-| `POST`   | `/api/auth/login`      | User authentication | ❌            |
-| `GET`    | `/api/employees`       | List all employees  | ✅            |
-| `POST`   | `/api/employees`       | Create new employee | ✅            |
-| `PUT`    | `/api/employees/{id}`  | Update employee     | ✅            |
-| `DELETE` | `/api/employees/{id}`  | Delete employee     | ✅ (Admin)    |
-| `GET`    | `/api/admin/employees` | Admin employee list | ✅ (Admin)    |
-
-<details>
-<summary><b>📝 Detailed API Specifications</b></summary>
-
-#### Authentication Endpoints
-
-**POST `/api/auth/login`**
-
-```json
-// Request
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-
-// Response (Success)
-{
-  "id": 1,
-  "firstName": "John",
-  "lastName": "Doe",
-  "email": "user@example.com",
-  "role": "USER",
-  "active": true
-}
-
-// Response (Error)
-{
-  "error": "Invalid credentials"
-}
-```
-
-#### Employee Management Endpoints
-
-**GET `/api/employees`**
-
-```json
-// Response
-[
-  {
-    "id": 1,
-    "firstName": "John",
-    "lastName": "Doe",
-    "email": "john.doe@company.com",
-    "position": "Software Engineer",
-    "department": "Engineering",
-    "salary": 75000,
-    "hireDate": "2023-01-15",
-    "active": true,
-    "role": "USER"
-  }
-]
-```
-
-**POST `/api/employees`**
-
-```json
-// Request
-{
-  "firstName": "Jane",
-  "lastName": "Smith",
-  "email": "jane.smith@company.com",
-  "password": "securepassword",
-  "position": "Product Manager",
-  "department": "Product",
-  "salary": 85000,
-  "active": true
-}
-
-// Response
-{
-  "id": 2,
-  "firstName": "Jane",
-  "lastName": "Smith",
-  "email": "jane.smith@company.com",
-  "position": "Product Manager",
-  "department": "Product",
-  "salary": 85000,
-  "hireDate": "2024-01-15",
-  "active": true,
-  "role": "USER"
-}
-```
-
-</details>
-
-### 🔒 Authentication Flow
+### 3.2 Render Server Wakeup & Queue Replay Sequence
 
 ```mermaid
 sequenceDiagram
-    participant C as Client
-    participant F as Frontend
-    participant B as Backend
-    participant D as Database
+    participant U as User / UI
+    participant INT as Fetch Interceptor
+    participant WAK as Server Wakeup Overlay
+    participant API as Spring Boot API
+    participant QUE as Pending Request Queue
 
-    C->>F: Enter credentials
-    F->>B: POST /api/auth/login
-    B->>D: Verify credentials
-    D-->>B: User data
-    B-->>F: User object + role
-    F-->>C: Redirect to dashboard
-
-    Note over F,B: Subsequent requests include user context
+    U->>INT: Perform Action (e.g., Create Employee)
+    INT->>API: POST /api/employees
+    API-->>INT: HTTP 504 / Connection Error (Server Sleeping)
+    
+    INT->>QUE: Enqueue Request & Pause Promise
+    INT->>WAK: Mount Wakeup Screen Overlay (Progress 0% -> 95%)
+    
+    loop Every 500ms
+        WAK->>API: GET /api/health
+    end
+    
+    API-->>WAK: HTTP 200 {"status": "UP"} (Server Awake)
+    WAK->>WAK: Smoothly fill bar to 100% (2.0s)
+    WAK->>WAK: Hold 100% state for 800ms
+    WAK->>WAK: Display Verification Mark (3.4s)
+    
+    WAK->>QUE: Trigger processPendingQueue()
+    QUE->>API: Replay Original Request (POST /api/employees)
+    API-->>U: Success Response (No Page Reload / No Redirect)
 ```
 
 ---
 
-## 🎨 UI/UX Showcase
+## 4. Technology Stack and Versions
 
-### 🎯 Design Philosophy
+### 4.1 Backend Services
 
-- **Glassmorphism**: Modern glass-like UI elements with backdrop blur
-- **Gradient Aesthetics**: Dynamic color gradients for visual appeal
-- **Micro-interactions**: Subtle animations that enhance user experience
-- **Accessibility First**: WCAG compliant design patterns
+| Component | Technology / Library | Version |
+|---|---|---|
+| Language | Java OpenJDK | 17 |
+| Framework | Spring Boot | 3.3.3 |
+| Database Access | Spring Data JPA / Hibernate | 6.5 |
+| Connection Pool | HikariCP | 5.1.0 |
+| Security | BCrypt Password Encoder | 6.3 |
+| Database | PostgreSQL | 15+ |
+| Build Tool | Apache Maven | 3.9+ |
 
-### 📱 Responsive Design Breakpoints
+### 4.2 Frontend Client
 
-| Device      | Breakpoint     | Features                              |
-| ----------- | -------------- | ------------------------------------- |
-| **Mobile**  | < 768px        | Collapsed navigation, stacked layouts |
-| **Tablet**  | 768px - 1024px | Sidebar navigation, grid layouts      |
-| **Desktop** | > 1024px       | Full featured interface, multi-column |
-
-### 🎨 Color Palette & Theming
-
-```css
-/* Primary Colors */
---primary-blue: #3b82f6 --primary-purple: #8b5cf6 --primary-pink: #ec4899
-  /* Glassmorphism */ --glass-bg: rgba(255, 255, 255, 0.25)
-  --glass-border: rgba(255, 255, 255, 0.18) --backdrop-blur: blur(10px)
-  /* Status Colors */ --success: #10b981 --warning: #f59e0b --error: #ef4444
-  --info: #3b82f6;
-```
+| Component | Technology / Library | Version |
+|---|---|---|
+| UI Library | React | 18.2.0 |
+| Build Tool | Vite | 5.4.21 |
+| Icons | Lucide React | 0.344.0 |
+| Styling | Vanilla Glassmorphism CSS | CSS3 |
 
 ---
 
-## 🧪 Testing
-
-### 🔬 Testing Strategy
-
-<details>
-<summary><b>Frontend Testing</b></summary>
-
-**Testing Framework**: Jest + React Testing Library
-
-```bash
-# Run all tests
-cd frontend && npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run tests in watch mode
-npm run test:watch
-```
-
-**Test Categories**:
-
-- **Unit Tests**: Component logic and utilities
-- **Integration Tests**: API integration and user flows
-- **E2E Tests**: Complete user journeys
-- **Accessibility Tests**: Screen reader and keyboard navigation
-
-</details>
-
-<details>
-<summary><b>Backend Testing</b></summary>
-
-**Testing Framework**: JUnit 5 + Mockito + TestContainers
-
-```bash
-# Run all tests
-cd backend && mvn test
-
-# Run tests with coverage
-mvn test jacoco:report
-
-# Run integration tests only
-mvn test -Dtest="*IntegrationTest"
-```
-
-**Test Categories**:
-
-- **Unit Tests**: Service layer and utilities
-- **Integration Tests**: Repository and controller layers
-- **Security Tests**: Authentication and authorization
-- **Performance Tests**: Load and stress testing
-
-</details>
-
-### 📊 Quality Metrics
-
-| Metric                  | Target | Current Status |
-| ----------------------- | ------ | -------------- |
-| **Code Coverage**       | > 80%  | ✅ 85%         |
-| **Performance Score**   | > 90   | ✅ 94          |
-| **Accessibility Score** | > 95   | ✅ 98          |
-| **Security Score**      | A+     | ✅ A+          |
-
----
-
-## 🤝 Contributing
-
-We welcome contributions from the community! Here's how you can help improve WorkHub:
-
-### 🛠️ Development Workflow
-
-1. **Fork the Repository**
-
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/WorkHub.git
-   cd WorkHub
-   git remote add upstream https://github.com/YOUR_USERNAME/WorkHub.git
-   ```
-
-2. **Create Feature Branch**
-
-   ```bash
-   git checkout -b feature/your-feature-name
-   git checkout -b bugfix/issue-number
-   git checkout -b hotfix/critical-fix
-   ```
-
-3. **Development Guidelines**
-   - Follow existing code style and conventions
-   - Add tests for new features
-   - Update documentation as needed
-   - Ensure all tests pass before submitting
-
-4. **Commit Standards**
-
-   ```bash
-   # Feature
-   git commit -m "feat: add employee search functionality"
-
-   # Bug fix
-   git commit -m "fix: resolve login authentication issue"
-
-   # Documentation
-   git commit -m "docs: update API documentation"
-   ```
-
-5. **Submit Pull Request**
-   - Create detailed PR description
-   - Reference related issues
-   - Add screenshots for UI changes
-   - Request review from maintainers
-
-### 🐛 Bug Reports
-
-**Before submitting a bug report**:
-
-- Check existing issues for duplicates
-- Test with the latest version
-- Gather relevant system information
-
-**Bug Report Template**:
-
-```markdown
-## Bug Description
-
-Brief description of the issue
-
-## Steps to Reproduce
-
-1. Step one
-2. Step two
-3. Step three
-
-## Expected Behavior
-
-What should happen
-
-## Actual Behavior
-
-What actually happens
-
-## Environment
-
-- OS: [e.g., Windows 10, macOS 12]
-- Browser: [e.g., Chrome 98, Firefox 97]
-- Node.js: [e.g., 18.14.0]
-- Java: [e.g., 17.0.2]
-```
-
-### 💡 Feature Requests
-
-We're always looking for ways to improve WorkHub! Submit feature requests through GitHub Issues with:
-
-- Clear description of the proposed feature
-- Use case and benefits
-- Potential implementation approach
-- Any relevant mockups or examples
-
----
-
-## 👥 Team
-
-<div align="center">
-
-### 🌟 Core Development Team
-
-<table>
-<tr>
-<td align="center">
-<img src="https://ui-avatars.com/api/?name=Tanmay+Kudkar&background=0f172a&color=ffffff&size=120" width="100px;" alt="Tanmay Kudkar"/><br />
-<b>Tanmay Kudkar</b><br />
-<sub>Core Development Team</sub>
-</td>
-<td align="center">
-<img src="https://ui-avatars.com/api/?name=Atharva+Raut&background=1d4ed8&color=ffffff&size=120" width="100px;" alt="Atharva Raut"/><br />
-<b>Atharva Raut</b><br />
-<sub>Core Development Team</sub>
-</td>
-<td align="center">
-<img src="https://ui-avatars.com/api/?name=Sameer+Balgar&background=be123c&color=ffffff&size=120" width="100px;" alt="Sameer Balgar"/><br />
-<b>Sameer Balgar</b><br />
-<sub>Core Development Team</sub><br />
-</td>
-<td align="center">
-<img src="https://ui-avatars.com/api/?name=Tejas+Dhuri&background=7c3aed&color=ffffff&size=120" width="100px;" alt="Tejas Dhuri"/><br />
-<b>Tejas Dhuri</b><br />
-<sub>Core Development Team</sub>
-</td>
-<td align="center">
-<img src="https://ui-avatars.com/api/?name=Ritikesh+Nayak&background=be123c&color=ffffff&size=120" width="100px;" alt="Ritikesh Nayak"/><br />
-<b>Ritikesh Nayak</b><br />
-<sub>Core Development Team</sub>
-</td>
-</tr>
-</table>
-
-### 🎯 Team Responsibilities
-
-| Team Member        | Role             | Focus Areas                          |
-| ------------------ | ---------------- | ------------------------------------ |
-| **Tanmay Kudkar**  | Core Team Member | Project coordination and development |
-| **Atharva Raut**   | Core Team Member | Development and collaboration        |
-| **Sameer Balgar**  | Core Team Member | Backend and database contributions   |
-| **Tejas Dhuri**    | Core Team Member | Feature development and testing      |
-| **Ritikesh Nayak** | Core Team Member | UI support and integration           |
-
-</div>
-
----
-
-## 📄 License
-
-```
-MIT License
-
-Copyright (c) 2025 WorkHub Development Team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-**What this means**:
-
-- ✅ Commercial use allowed
-- ✅ Modification allowed
-- ✅ Distribution allowed
-- ✅ Private use allowed
-- ❗ License and copyright notice must be included
-
----
-
-## 🆘 Support
-
-### 💬 Get Help
-
-<div align="center">
-
-[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-red?logo=github)](https://github.com/Tanmay-Kudkar/WorkHub/issues)
-[![Discussions](https://img.shields.io/badge/GitHub-Discussions-blue?logo=github)](https://github.com/Tanmay-Kudkar/WorkHub/discussions)
-[![Stack Overflow](https://img.shields.io/badge/Stack-Overflow-orange?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/workhub)
-
-</div>
-
-### 🔧 Troubleshooting
-
-<details>
-<summary><b>Common Issues & Solutions</b></summary>
-
-#### Frontend Issues
-
-**Build Errors**
-
-```bash
-# Clear cache and reinstall
-rm -rf node_modules package-lock.json
-npm install
-
-# Check Node.js version
-node --version  # Should be 18+
-```
-
-**Environment Variables Not Working**
-
-```bash
-# Ensure VITE_ prefix
-VITE_API_BASE_URL=http://localhost:8080
-
-# Restart dev server after changes
-npm run dev
-```
-
-**Accessibility Issues**
-
-```bash
-# Form field elements missing id/name attributes
-# Solution: Add unique id and name attributes to all form inputs
-
-# Label not associated with form field
-# Solution: Use htmlFor attribute on labels or nest inputs inside labels
-
-# Content Security Policy blocks eval()
-# Solution: Avoid using eval() in JavaScript, use proper CSP headers
-```
-
-**Security & Performance**
-
-- **CSP Violations**: Ensure no `eval()` usage in JavaScript code
-- **Form Accessibility**: All form inputs should have proper labels and IDs
-- **ARIA Compliance**: Use proper ARIA attributes for screen readers
-
-</details>
-
-<details>
-<summary><b>Backend Issues</b></summary>
-
-**Database Connection Failed**
-
-```bash
-# Check PostgreSQL service
-brew services start postgresql  # macOS
-sudo systemctl start postgresql  # Linux
-
-# Verify credentials in application.properties
-spring.datasource.username=WORKHUB
-spring.datasource.password=ChangeMe_S3cure!
-```
-
-**Port Already in Use**
-
-```bash
-# Find process using port 8080
-lsof -i :8080
-
-# Kill the process
-kill -9 <PID>
-
-# Or use different port
-server.port=8081
-```
-
-</details>
-
-<details>
-<summary><b>Deployment Issues</b></summary>
-
-**Vercel Build Fails**
-
-- Check Node.js version in Vercel settings (use 18.x)
-- Verify `outDir: "build"` in vite.config.js matches Vercel output directory
-- Ensure all environment variables are set in Vercel dashboard
-
-**Render Deployment Fails**
-
-- Check Java version (use 17 or higher)
-- Verify Maven build command: `mvn clean install -DskipTests`
-- Check application logs in Render dashboard
-
-</details>
-
-### 📞 Contact Information
-
-**For urgent issues or security concerns**:
-
-- 📧 Email: [workhub.team@gmail.com](mailto:workhub.team@gmail.com)
-- 🐛 Bug Reports: [GitHub Issues](https://github.com/Tanmay-Kudkar/WorkHub/issues)
-- 💡 Feature Requests: [GitHub Discussions](https://github.com/Tanmay-Kudkar/WorkHub/discussions)
-
-### 🙏 Acknowledgments
-
-Special thanks to:
-
-- **Open Source Community** for amazing tools and libraries
-- **Vercel & Render** for providing excellent hosting platforms
-- **Spring Boot Team** for the robust backend framework
-- **React Team** for the incredible frontend library
-- **TailwindCSS** for beautiful utility-first styling
-
----
-
-<div align="center">
-
-### 🌟 Show Your Support
-
-If you find WorkHub helpful, please consider:
-
-[![⭐ Star on GitHub](https://img.shields.io/badge/⭐-Star%20on%20GitHub-yellow?style=for-the-badge)](https://github.com/Tanmay-Kudkar/WorkHub)
-[![🔄 Fork Repository](https://img.shields.io/badge/🔄-Fork%20Repository-blue?style=for-the-badge)](https://github.com/Tanmay-Kudkar/WorkHub/fork)
-[![📢 Share Project](https://img.shields.io/badge/📢-Share%20Project-green?style=for-the-badge)](https://twitter.com/intent/tweet?text=Check%20out%20WorkHub%20-%20A%20modern%20employee%20management%20system!&url=https://github.com/Tanmay-Kudkar/WorkHub)
-
-**Made with ❤️ by the WorkHub Team**
-
-_Empowering organizations through better employee management_
-
-</div>
-
-<!-- AUTO-GENERATED-EXTENDED-DOCS:START -->
-
----
-
-## WorkHub Extended Engineering Compendium (Auto-Generated)
-
-> Generated from current schema and controller sources for a deeply detailed, PDF-friendly project manual.
-
-### Verified Inputs
-
-- Schema references: database/schema.sql and backend/src/main/resources/schema.sql
-- API references: backend/src/main/java/com/workhub/backend/controller/\*
-- Frontend shell references: frontend/src/main.jsx and frontend/src/App.jsx
-
-### ER Diagram (Physical Database Model: 8 Tables)
+## 5. Domain Model and Data Schema
+
+### 5.1 Core Entity Specifications
+
+- **`employees`**: Central workforce entity storing personal info, job attributes, BCrypt hashes, and role scopes (`USER`/`ADMIN`).
+- **`departments`**: Organizational units (Engineering, HR, Finance, Operations).
+- **`job_titles`**: Position classifications (Software Engineer, Financial Analyst, HR Specialist).
+- **`employee_addresses`**: Detailed residential address mapping (1-to-1 with `employees`).
+- **`payroll`**: Compensation records detailing base salary, bonuses, deductions, and pay dates.
+- **`attendance_records`**: Daily check-in/out timestamps and attendance status.
+- **`leave_types`**: Leave classification system (Casual, Sick, Earned) with annual quotas.
+- **`leave_requests`**: Employee leave applications, approval tracking, and workflow states.
+
+### 5.2 Relational Database Entity Diagram (3NF Schema Mapping)
 
 ```mermaid
 erDiagram
-  DEPARTMENTS ||--o{ EMPLOYEES : department_id
-  JOB_TITLES ||--o{ EMPLOYEES : job_title_id
-  EMPLOYEES ||--|| EMPLOYEE_ADDRESSES : employee_id_unique
-  EMPLOYEES ||--o{ PAYROLL : employee_id
-  EMPLOYEES ||--o{ ATTENDANCE_RECORDS : employee_id
-  EMPLOYEES ||--o{ LEAVE_REQUESTS : employee_id_requester
-  LEAVE_TYPES ||--o{ LEAVE_REQUESTS : leave_type_id
-  EMPLOYEES ||--o{ LEAVE_REQUESTS : approved_by
+    DEPARTMENTS ||--o{ EMPLOYEES : "has many"
+    JOB_TITLES ||--o{ EMPLOYEES : "designates"
+    EMPLOYEES ||--o| EMPLOYEE_ADDRESSES : "has one"
+    EMPLOYEES ||--o{ PAYROLL : "receives"
+    EMPLOYEES ||--o{ ATTENDANCE_RECORDS : "logs"
+    EMPLOYEES ||--o{ LEAVE_REQUESTS : "applies for"
+    LEAVE_TYPES ||--o{ LEAVE_REQUESTS : "categorizes"
+    EMPLOYEES ||--o{ LEAVE_REQUESTS : "approves"
 
-  DEPARTMENTS {
-    bigint id PK
-    varchar name UK
-  }
+    DEPARTMENTS {
+        bigint id PK
+        string name UK
+    }
 
-  JOB_TITLES {
-    bigint id PK
-    varchar title UK
-  }
+    JOB_TITLES {
+        bigint id PK
+        string title UK
+    }
 
-  EMPLOYEES {
-    bigint id PK
-    varchar first_name
-    varchar last_name
-    varchar email UK
-    bigint department_id FK
-    bigint job_title_id FK
-    varchar role
-    timestamp created_at
-  }
+    EMPLOYEES {
+        bigint id PK
+        string first_name
+        string last_name
+        string email UK
+        string phone
+        string phone_country_code
+        bigint department_id FK
+        bigint job_title_id FK
+        decimal salary
+        string currency
+        date date_of_birth
+        date hire_date
+        boolean active
+        string role
+        text profile_image
+        string password_hash
+        timestamp created_at
+        timestamp last_login_at
+    }
 
-  EMPLOYEE_ADDRESSES {
-    bigint id PK
-    bigint employee_id FK,UK
-    text address_line
-  }
+    EMPLOYEE_ADDRESSES {
+        bigint id PK
+        bigint employee_id FK
+        text address_line
+        string city
+        string state
+        string pincode
+    }
 
-  PAYROLL {
-    bigint id PK
-    bigint employee_id FK
-    decimal salary
-    date pay_date
-  }
+    PAYROLL {
+        bigint id PK
+        bigint employee_id FK
+        decimal salary
+        decimal bonus
+        decimal deductions
+        date pay_date
+    }
 
-  ATTENDANCE_RECORDS {
-    bigint id PK
-    bigint employee_id FK
-    date attendance_date
-    varchar attendance_status
-  }
+    ATTENDANCE_RECORDS {
+        bigint id PK
+        bigint employee_id FK
+        date attendance_date
+        timestamp check_in_time
+        timestamp check_out_time
+        string attendance_status
+    }
 
-  LEAVE_TYPES {
-    bigint id PK
-    varchar leave_code UK
-    integer annual_quota_days
-  }
+    LEAVE_TYPES {
+        bigint id PK
+        string leave_code UK
+        string leave_name
+        int annual_quota_days
+    }
 
-  LEAVE_REQUESTS {
-    bigint id PK
-    bigint employee_id FK
-    bigint leave_type_id FK
-    bigint approved_by FK
-    varchar approval_status
-  }
+    LEAVE_REQUESTS {
+        bigint id PK
+        bigint employee_id FK
+        bigint leave_type_id FK
+        date start_date
+        date end_date
+        text reason
+        string approval_status
+        timestamp applied_on
+        timestamp approved_on
+        bigint approved_by FK
+    }
 ```
 
-### EER Diagram (Conceptual Model + Role Specialization)
+---
 
-```mermaid
-classDiagram
-  class Employee {
-    +id
-    +email
-    +role
-    +active
-  }
-  class AdminEmployee {
-    +approveLeaveRequest()
-    +viewAllEmployeeRecords()
-  }
-  class StandardEmployee {
-    +requestLeave()
-    +checkIn()
-  }
-  class Department
-  class JobTitle
-  class EmployeeAddress
-  class Payroll
-  class AttendanceRecord
-  class LeaveType
-  class LeaveRequest
+## 6. Real-World Use Cases
 
-  Employee <|-- AdminEmployee
-  Employee <|-- StandardEmployee
+1. **HR Onboarding & Offboarding**: Quickly adding new employees with automated department assignments, salary tiers, and account credentials.
+2. **Enterprise Access Control**: Separating standard employee views (`USER`) from administrative privileges (`ADMIN` - editing salaries, deleting records, changing roles).
+3. **Seamless Cloud Hosting**: Hosting backend services on Render free-tier while maintaining an ultra-sleek, non-frustrating user experience when servers wake up.
+4. **Unified Authentication**: Allowing users to log in seamlessly using Google Workspace OAuth or standard email/password credentials.
 
-  Department "1" --> "0..*" Employee : assigns
-  JobTitle "1" --> "0..*" Employee : defines
-  Employee "1" --> "0..1" EmployeeAddress : has
-  Employee "1" --> "0..*" Payroll : receives
-  Employee "1" --> "0..*" AttendanceRecord : logs
-  Employee "1" --> "0..*" LeaveRequest : submits
-  LeaveType "1" --> "0..*" LeaveRequest : categorizes
-  AdminEmployee "1" --> "0..*" LeaveRequest : approves
+---
+
+## 7. Core Problems Solved
+
+- **Cloud Cold-Start Friction**: Eliminates broken UI states or blank error screens when backend services sleep on free cloud hosting.
+- **Credential Conflicts**: Prevents password collisions when users register with emails already associated with Google OAuth.
+- **Background Scroll Leaks**: Prevents background body scrolling on all overlay modals across desktop and mobile browsers.
+
+---
+
+## 8. API Reference & Endpoints
+
+<details>
+<summary><strong>🔐 Authentication Endpoints</strong></summary>
+
+<br>
+
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| <kbd>POST</kbd> | `/api/auth/login` | Authenticates user with email and password. | ❌ |
+| <kbd>POST</kbd> | `/api/auth/google` | Authenticates user using Google ID token. | ❌ |
+| <kbd>GET</kbd>  | `/api/auth/google/start` | Initiates Google OAuth 2.0 authorization code flow. | ❌ |
+| <kbd>GET</kbd>  | `/api/auth/google/callback` | Google OAuth redirect callback handler. | ❌ |
+| <kbd>GET</kbd>  | `/api/auth/google/exchange` | Exchanges login token for employee session object. | ❌ |
+
+</details>
+
+<details>
+<summary><strong>👥 Employee Management Endpoints</strong></summary>
+
+<br>
+
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| <kbd>GET</kbd>  | `/api/employees` | Retrieves list of all employees (with enriched department/job title names). | 🔒 |
+| <kbd>GET</kbd>  | `/api/employees/:id` | Retrieves detailed employee profile by ID. | 🔒 |
+| <kbd>POST</kbd> | `/api/employees` | Creates a new employee record (Registration). | ❌ / 🔒 |
+| <kbd>PUT</kbd>  | `/api/employees/:id` | Updates existing employee profile details. | 🔒 (ADMIN) |
+| <kbd>DELETE</kbd>| `/api/employees/:id` | Permanently deletes an employee record. | 🔒 (ADMIN) |
+
+</details>
+
+<details>
+<summary><strong>🏢 Master Data & Health Endpoints</strong></summary>
+
+<br>
+
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| <kbd>GET</kbd> | `/api/health` | Health check endpoint returning HTTP 200 `{"status": "UP"}`. | ❌ |
+| <kbd>GET</kbd> | `/api/departments` | Retrieves list of active organizational departments. | 🔒 |
+| <kbd>GET</kbd> | `/api/job-titles` | Retrieves list of active job titles. | 🔒 |
+
+</details>
+
+---
+
+## 9. Cloud Deployment & Render Wakeup UI
+
+WorkHub is engineered for seamless deployment on **Render.com** (Backend API + Database) and **Vercel** (Frontend Client).
+
+### 9.1 Render Backend Environment Setup
+Configure the following environment variables in your Render Web Service:
+
+```env
+DATABASE_URL=postgres://workhub_user:YOUR_PASSWORD@dpg-xxxx-a.oregon-postgres.render.com/workhub_db
+PORT=8080
+WORKHUB_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+WORKHUB_GOOGLE_CLIENT_SECRET=your-google-client-secret
+WORKHUB_GOOGLE_REDIRECT_URI=https://your-backend.onrender.com/api/auth/google/callback
+WORKHUB_FRONTEND_URL=https://your-frontend.vercel.app
 ```
 
-### Physical Entity Dictionary
+---
 
-#### 1) departments
+## 10. Local Development Setup
 
-- Purpose: Department master data for normalization.
-  | Column | Type | Constraints | Notes |
-  |---|---|---|---|
-  | id | BIGSERIAL | PK | Department surrogate key |
-  | name | VARCHAR(100) | UNIQUE, NOT NULL | Canonical department name |
-  | department_name | VARCHAR(100) | Legacy compatibility | Backfill helper column |
+### 10.1 Prerequisites
+- Java 17+
+- Node.js v18+ & npm
+- PostgreSQL database running locally (or via Docker)
+- Git
 
-#### 2) job_titles
+### 10.2 Run Backend (Spring Boot)
+```bash
+cd backend
+mvn spring-boot:run
+```
+The Spring Boot server starts on `http://localhost:8080`.
 
-- Purpose: Job title master data for normalization.
-  | Column | Type | Constraints | Notes |
-  |---|---|---|---|
-  | id | BIGSERIAL | PK | Job title surrogate key |
-  | title | VARCHAR(100) | UNIQUE, NOT NULL | Canonical title |
-  | title_name | VARCHAR(100) | Legacy compatibility | Backfill helper column |
+### 10.3 Run Frontend (React + Vite)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Navigate to `http://localhost:5173`.
 
-#### 3) employees
+---
 
-- Purpose: Core employee identity, profile, auth, and role context.
-  | Column | Type | Constraints | Notes |
-  |---|---|---|---|
-  | id | BIGSERIAL | PK | Employee key |
-  | first_name | VARCHAR(255) | NOT NULL | Given name |
-  | last_name | VARCHAR(255) | NOT NULL | Surname |
-  | email | VARCHAR(255) | UNIQUE, NOT NULL | Login identity |
-  | phone | VARCHAR(255) | NULL | Contact number |
-  | phone_country_code | VARCHAR(5) | NULL | Dialing code |
-  | department | VARCHAR(255) | Legacy | Legacy text column |
-  | position | VARCHAR(255) | Legacy | Legacy text column |
-  | address | VARCHAR(255) | Legacy | Legacy text column |
-  | profile_image | TEXT | NULL | URI/base64 payload |
-  | salary | NUMERIC(19,2) | NULL | Current salary snapshot |
-  | currency | VARCHAR(3) | NULL | ISO-4217 code |
-  | date_of_birth | DATE | NULL | DOB |
-  | hire_date | DATE | NULL | Employment start date |
-  | department_id | BIGINT | FK | References departments.id |
-  | job_title_id | BIGINT | FK | References job_titles.id |
-  | active | BOOLEAN | DEFAULT TRUE | Account state |
-  | role | VARCHAR(255) | DEFAULT USER | ADMIN or USER |
-  | password_hash | VARCHAR(255) | NULL | Secure hash |
-  | created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Created time |
-  | last_login_at | TIMESTAMP | NULL | Last auth success |
+## 11. Repository Layout
 
-#### 4) employee_addresses
-
-- Purpose: Normalized one-to-one structured address extension.
-  | Column | Type | Constraints | Notes |
-  |---|---|---|---|
-  | id | BIGSERIAL | PK | Address key |
-  | employee_id | BIGINT | FK, UNIQUE, NOT NULL | One address per employee |
-  | address_line | TEXT | NULL | Line address |
-  | city | VARCHAR(50) | NULL | City |
-  | state | VARCHAR(50) | NULL | State or Province |
-  | pincode | VARCHAR(10) | NULL | Postal code |
-
-#### 5) payroll
-
-- Purpose: Payroll ledger rows per employee and pay date.
-  | Column | Type | Constraints | Notes |
-  |---|---|---|---|
-  | id | BIGSERIAL | PK | Payroll key |
-  | employee_id | BIGINT | FK, NOT NULL | Employee reference |
-  | salary | DECIMAL(10,2) | NULL | Base pay |
-  | bonus | DECIMAL(10,2) | NULL | Bonus amount |
-  | deductions | DECIMAL(10,2) | NULL | Deduction amount |
-  | pay_date | DATE | NULL | Payroll date |
-
-#### 6) attendance_records
-
-- Purpose: Daily attendance and time-stamp tracking.
-  | Column | Type | Constraints | Notes |
-  |---|---|---|---|
-  | id | BIGSERIAL | PK | Attendance key |
-  | employee_id | BIGINT | FK, NOT NULL | Employee reference |
-  | attendance_date | DATE | UNIQUE(employee_id, attendance_date) | One row per day |
-  | check_in_time | TIMESTAMP | NULL | Check-in event time |
-  | check_out_time | TIMESTAMP | NULL | Check-out event time |
-  | attendance_status | VARCHAR(20) | DEFAULT NOT_MARKED | Present or absent-like state |
-
-#### 7) leave_types
-
-- Purpose: Leave policy master data and annual quota definitions.
-  | Column | Type | Constraints | Notes |
-  |---|---|---|---|
-  | id | BIGSERIAL | PK | Leave type key |
-  | leave_code | VARCHAR(20) | UNIQUE, NOT NULL | CL or SL or EL etc. |
-  | leave_name | VARCHAR(80) | NOT NULL | Human-readable label |
-  | annual_quota_days | INTEGER | NOT NULL | Yearly limit |
-
-#### 8) leave_requests
-
-- Purpose: Leave workflow transaction table with approval metadata.
-  | Column | Type | Constraints | Notes |
-  |---|---|---|---|
-  | id | BIGSERIAL | PK | Leave request key |
-  | employee_id | BIGINT | FK, NOT NULL | Requester employee |
-  | leave_type_id | BIGINT | FK, NOT NULL | Leave category |
-  | start_date | DATE | NOT NULL | Leave start |
-  | end_date | DATE | NOT NULL | Leave end |
-  | reason | TEXT | NULL | Optional notes |
-  | approval_status | VARCHAR(20) | DEFAULT PENDING | PENDING APPROVED REJECTED |
-  | applied_on | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | Applied timestamp |
-  | approved_on | TIMESTAMP | NULL | Decision timestamp |
-  | approved_by | BIGINT | FK, NULL | Approver employee id |
-
-### API Endpoint Master Table
-
-|   # | Method | Endpoint                                                 | Access     | Function                 |
-| --: | ------ | -------------------------------------------------------- | ---------- | ------------------------ |
-|   1 | POST   | /api/auth/login                                          | Public     | Password login           |
-|   2 | POST   | /api/auth/google                                         | Public     | Google token login       |
-|   3 | GET    | /api/auth/google/start                                   | Public     | Start OAuth flow         |
-|   4 | GET    | /api/auth/google/callback                                | Public     | OAuth callback           |
-|   5 | GET    | /api/auth/google/exchange                                | Public     | Exchange callback token  |
-|   6 | GET    | /api/employees                                           | Admin/Self | List employee data       |
-|   7 | GET    | /api/employees/{id}                                      | Admin/Self | Get employee profile     |
-|   8 | POST   | /api/employees                                           | Public     | Register/create employee |
-|   9 | PUT    | /api/employees/{id}                                      | Admin/Self | Update employee          |
-|  10 | DELETE | /api/employees/{id}                                      | Admin      | Delete employee          |
-|  11 | GET    | /api/admin/employees                                     | Admin      | Admin list users         |
-|  12 | GET    | /api/admin/employees/{id}                                | Admin      | Admin view user          |
-|  13 | DELETE | /api/admin/employees/{id}                                | Admin      | Admin delete user        |
-|  14 | GET    | /api/departments                                         | All        | Department lookup        |
-|  15 | GET    | /api/job-titles                                          | All        | Job title lookup         |
-|  16 | GET    | /api/dbms/overview                                       | All        | DB module summary        |
-|  17 | GET    | /api/dbms/table/{tableName}                              | All        | Generic table preview    |
-|  18 | GET    | /api/dbms/leave-types                                    | All        | Leave type list          |
-|  19 | GET    | /api/dbms/employees/{employeeId}/leave-requests          | Admin/Self | List leave requests      |
-|  20 | POST   | /api/dbms/employees/{employeeId}/leave-requests          | Admin/Self | Create leave request     |
-|  21 | GET    | /api/dbms/admin/leave-requests                           | Admin      | Pending leave queue      |
-|  22 | GET    | /api/dbms/admin/employees/{employeeId}/leave-requests    | Admin      | Employee leave history   |
-|  23 | POST   | /api/dbms/admin/leave-requests/{leaveRequestId}/decision | Admin      | Approve/reject leave     |
-|  24 | GET    | /api/dbms/admin/employees/{employeeId}/attendance        | Admin      | Attendance history       |
-|  25 | GET    | /api/dbms/employees/{employeeId}/attendance/today        | Admin/Self | Today attendance state   |
-|  26 | POST   | /api/dbms/employees/{employeeId}/attendance/check-in     | Admin/Self | Check in                 |
-|  27 | POST   | /api/dbms/employees/{employeeId}/attendance/check-out    | Admin/Self | Check out                |
-|  28 | GET    | /api/dbms/employees/{employeeId}/address                 | Admin/Self | Read address             |
-|  29 | POST   | /api/dbms/employees/{employeeId}/address                 | Admin/Self | Upsert address           |
-|  30 | GET    | /api/dbms/employees/{employeeId}/payroll                 | Admin/Self | Employee payroll         |
-|  31 | GET    | /api/dbms/admin/employees/{employeeId}/payroll           | Admin      | Payroll for employee     |
-|  32 | POST   | /api/dbms/employees/{employeeId}/payroll                 | Admin/Self | Create payroll record    |
-
+```text
+WorkHub/
+|- README.md                    # Root documentation (You are here)
+|- docker-compose.yml           # Docker orchestration
+|- database/
+|  |- schema.sql                # Database DDL schema initialization
+|- backend/                     # Java Spring Boot Backend
+|  |- src/
+|  |  |- main/
+|  |  |  |- java/com/workhub/backend/
+|  |  |  |  |- config/          # DatabaseConfig.java & Security configs
+|  |  |  |  |- controller/      # REST API Controllers (Auth, Employee, MasterData)
+|  |  |  |  |- dto/             # Data Transfer Objects
+|  |  |  |  |- entity/          # JPA Entities (Employee, Department, JobTitle)
+|  |  |  |  |- exception/       # GlobalExceptionHandler.java
+|  |  |  |  |- repository/     # Spring Data JPA Repositories
+|  |  |  |  |- service/        # AuthService, EmployeeService
+|  |  |  |- resources/          # application.properties, schema.sql
+|  |- pom.xml                   # Maven dependencies
+|- frontend/                    # React 18 + Vite Frontend
+|  |- public/                   # Static assets & favicon
+|  |- src/
+|  |  |- components/            # UI components & Modals
+|  |  |  |- ui/                 # ServerWakeupScreen.jsx overlay
+|  |  |- context/               # ServerStateContext.jsx (Fetch Interceptor & Queue)
+|  |  |- hooks/                 # useLockBodyScroll.js
+|  |  |- services/              # api.js API client
+|  |  |- App.jsx                # Main application component
+|  |  |- index.css              # Glassmorphic design system & SVG animations
+|  |- package.json
+```

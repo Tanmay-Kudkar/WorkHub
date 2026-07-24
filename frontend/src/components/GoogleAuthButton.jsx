@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getGoogleAuthStartUrl } from "../services/api.js";
 import googleIcon from "../../assets/google-icon.svg";
 
@@ -11,6 +11,23 @@ export default function GoogleAuthButton({
 }) {
   const [redirecting, setRedirecting] = useState(false);
   const isDark = theme === "dark";
+
+  useEffect(() => {
+    // Reset redirecting state when returning to page (e.g. via back button / bfcache)
+    const resetRedirectState = () => setRedirecting(false);
+
+    const handlePageShow = () => {
+      setRedirecting(false);
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+    window.addEventListener("focus", resetRedirectState);
+
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow);
+      window.removeEventListener("focus", resetRedirectState);
+    };
+  }, []);
 
   const label = useMemo(() => {
     return mode === "register" ? "Sign up with Google" : "Sign in with Google";

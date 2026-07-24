@@ -465,10 +465,10 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
     const redirectToken = params.get("google_token");
     const redirectError = params.get("google_error");
-    const redirectMode = params.get("google_mode");
+    const savedAuthMode = sessionStorage.getItem(AUTH_MODE_KEY);
+    const redirectMode = params.get("google_mode") || savedAuthMode;
 
     if (!redirectToken && !redirectError) {
-      setShowAuthPanel(false);
       return;
     }
 
