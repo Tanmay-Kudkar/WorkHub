@@ -1,10 +1,13 @@
 import React from "react";
+import useLockBodyScroll from "../hooks/useLockBodyScroll.js";
 
 export default function AccessDeniedModal({
   isOpen,
   onClose,
   theme = "light",
 }) {
+  useLockBodyScroll(isOpen);
+
   if (!isOpen) return null;
 
   const isDark = theme === "dark";

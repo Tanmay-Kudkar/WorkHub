@@ -37,6 +37,21 @@ public class EmployeeService {
   }
 
   public Employee create(Employee employee) {
+    if (employee.getEmail() != null && !employee.getEmail().isBlank()) {
+      String cleanEmail = employee.getEmail().trim().toLowerCase();
+      var existingOpt = employeeRepository.findByEmail(cleanEmail);
+      if (existingOpt.isPresent()) {
+        Employee existing = existingOpt.get();
+        if (existing.getPasswordHash() == null || existing.getPasswordHash().isBlank()) {
+          throw new IllegalArgumentException(
+              "This email is registered using Google Sign-In. Please click 'Continue with Google' to sign in.");
+        } else {
+          throw new IllegalArgumentException(
+              "An account with this email address already exists. Please sign in using your password.");
+        }
+      }
+    }
+
     if (employee.getPassword() != null && !employee.getPassword().isBlank()) {
       employee.setPasswordHash(passwordEncoder.encode(employee.getPassword()));
     } else if (employee.getPasswordHash() != null && !employee.getPasswordHash().isBlank()) {

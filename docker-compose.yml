@@ -8,13 +8,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # Use either full URL or parts. Replace with your real PostgreSQL values.
-      # SPRING_DATASOURCE_URL: "jdbc:postgresql://<HOST>:5432/<DB>?sslmode=require"
-      DB_HOST: "<HOST>"
-      DB_PORT: "5432"
-      DB_NAME: "<DB>"
-      DB_USER: "<USER>"
-      DB_PASSWORD: "<PASSWORD>"
+      DATABASE_URL: "postgresql://<USER>:<PASSWORD>@<HOST>:5432/<DB>"
       HIBERNATE_DIALECT: "org.hibernate.dialect.PostgreSQLDialect"
       # Google OAuth (authorization code flow)
       WORKHUB_GOOGLE_CLIENT_ID: "<GOOGLE_CLIENT_ID>"

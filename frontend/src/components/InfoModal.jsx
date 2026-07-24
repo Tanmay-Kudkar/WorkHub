@@ -1,4 +1,5 @@
 import React from "react";
+import useLockBodyScroll from "../hooks/useLockBodyScroll.js";
 
 export default function InfoModal({
   isOpen,
@@ -9,6 +10,8 @@ export default function InfoModal({
   onRegister,
   theme = "light",
 }) {
+  useLockBodyScroll(isOpen);
+
   if (!isOpen) return null;
 
   const isDark = theme === "dark";

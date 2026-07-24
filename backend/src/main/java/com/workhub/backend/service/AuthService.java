@@ -108,7 +108,12 @@ public class AuthService {
     }
 
     Employee employee = userOpt.get();
-    if (employee.getPasswordHash() == null || !passwordEncoder.matches(password, employee.getPasswordHash())) {
+    if (employee.getPasswordHash() == null || employee.getPasswordHash().isBlank()) {
+      return ResponseEntity.status(400).body(Map.of(
+          "error", "This email is registered using Google Sign-In. Please click 'Continue with Google' to sign in."));
+    }
+
+    if (!passwordEncoder.matches(password, employee.getPasswordHash())) {
       return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials."));
     }
 

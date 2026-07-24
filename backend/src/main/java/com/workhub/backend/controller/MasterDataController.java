@@ -27,6 +27,11 @@ public class MasterDataController {
     return ResponseEntity.ok(masterDataService.listDepartments());
   }
 
+  @GetMapping("/health")
+  public ResponseEntity<Map<String, String>> healthCheck() {
+    return ResponseEntity.ok(Map.of("status", "UP"));
+  }
+
   @GetMapping("/job-titles")
   public ResponseEntity<List<Map<String, Object>>> listJobTitles() {
     return ResponseEntity.ok(masterDataService.listJobTitles());

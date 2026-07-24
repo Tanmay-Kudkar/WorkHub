@@ -9,6 +9,7 @@ import ThemeToggle from "./components/ThemeToggle.jsx";
 import GoogleAuthButton from "./components/GoogleAuthButton.jsx";
 import { exchangeGoogleAuthToken } from "./services/api.js";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import useLockBodyScroll from "./hooks/useLockBodyScroll.js";
 
 // Use env API base (e.g. http://localhost:3000). Falls back to relative.
 const API_BASE = (import.meta.env?.VITE_API_BASE_URL || "").replace(/\/$/, "");
@@ -406,6 +407,8 @@ export default function App() {
   const authTransitionTimerRef = useRef(null);
   const navigate = useNavigate();
 
+  useLockBodyScroll(showAuthPanel && !user);
+
   // Migrate legacy hash URLs (/#/workspace/...) to BrowserRouter paths (/workspace/...).
   useEffect(() => {
     const h = window.location.hash;
@@ -465,11 +468,7 @@ export default function App() {
     const redirectMode = params.get("google_mode");
 
     if (!redirectToken && !redirectError) {
-      const savedAuthMode = sessionStorage.getItem(AUTH_MODE_KEY);
-      if (savedAuthMode === "login" || savedAuthMode === "register") {
-        setShowAuthPanel(true);
-        setShowRegister(savedAuthMode === "register");
-      }
+      setShowAuthPanel(false);
       return;
     }
 

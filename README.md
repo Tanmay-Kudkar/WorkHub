@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # 🏢 WorkHub Employee Management System
 
@@ -328,12 +328,9 @@ build: {
 
 3. **Environment Variables**:
    ```bash
-   SPRING_DATASOURCE_URL=jdbc:postgresql://your-db-host:5432/workhub_db
-   SPRING_DATASOURCE_USERNAME=your-db-username
-   SPRING_DATASOURCE_PASSWORD=your-db-password
+   DATABASE_URL=postgresql://your-db-username:your-db-password@your-db-host:5432/workhub_db
    SPRING_JPA_HIBERNATE_DDL_AUTO=update
-   SERVER_PORT=8080
-   SPRING_PROFILES_ACTIVE=production
+   PORT=8080
    ```
 
 </details>
@@ -395,9 +392,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/workhub_db
-      - SPRING_DATASOURCE_USERNAME=workhub
-      - SPRING_DATASOURCE_PASSWORD=workhub123
+      - DATABASE_URL=postgresql://workhub:workhub123@db:5432/workhub_db
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
       - db

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import AccessDeniedModal from "./AccessDeniedModal.jsx";
+import useLockBodyScroll from "../hooks/useLockBodyScroll.js";
 
 export default function EmployeeDetailModal({
   employee,
@@ -9,6 +10,8 @@ export default function EmployeeDetailModal({
   theme = "light",
 }) {
   const [showAccessDenied, setShowAccessDenied] = useState(false);
+
+  useLockBodyScroll(!!employee);
 
   if (!employee) return null;
 

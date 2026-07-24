@@ -1,4 +1,5 @@
 import React from "react";
+import useLockBodyScroll from "../hooks/useLockBodyScroll.js";
 
 export default function ConfirmDialog({
   isOpen,
@@ -8,6 +9,8 @@ export default function ConfirmDialog({
   onCancel,
   theme = "light",
 }) {
+  useLockBodyScroll(isOpen);
+
   if (!isOpen) return null;
 
   const isDark = theme === "dark";
