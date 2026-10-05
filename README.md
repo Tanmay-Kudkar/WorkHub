@@ -17,18 +17,18 @@
       <strong>Vite 5.4.21</strong>
     </td>
     <td align="center" width="130">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java 17" width="90" height="90" /><br />
-      <strong>Java OpenJDK 17</strong>
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java 25" width="90" height="90" /><br />
+      <strong>Java OpenJDK 25 LTS</strong>
     </td>
     <td align="center" width="130">
       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" alt="Spring Boot" width="90" height="90" /><br />
-      <strong>Spring Boot 3.3.3</strong>
+      <strong>Spring Boot 3.5.16</strong>
     </td>
   </tr>
   <tr>
     <td align="center" width="130">
       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL" width="90" height="90" /><br />
-      <strong>PostgreSQL 15+</strong>
+      <strong>PostgreSQL 18+</strong>
     </td>
     <td align="center" width="130">
       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google OAuth 2.0" width="90" height="90" /><br />
@@ -70,7 +70,7 @@
 | Item | Value |
 |---|---|
 | Frontend Client | React 18 + Vite 5 + Glassmorphism CSS (`frontend/`) |
-| Backend API | Spring Boot 3.3.3 + Java 17 + Spring Data JPA (`backend/`) |
+| Backend API | Spring Boot 3.5.16 + Java 25 + Spring Data JPA (`backend/`) |
 | Connection Pool | HikariCP (optimized for cloud connection limits) |
 | Database | PostgreSQL 15+ |
 | Authentication | Native Password Hashing (BCrypt) + Google OAuth 2.0 |
@@ -225,8 +225,8 @@ sequenceDiagram
 
 | Component | Technology / Library | Version |
 |---|---|---|
-| Language | Java OpenJDK | 17 |
-| Framework | Spring Boot | 3.3.3 |
+| Language | Java OpenJDK | 25 LTS |
+| Framework | Spring Boot | 3.5.16 |
 | Database Access | Spring Data JPA / Hibernate | 6.5 |
 | Connection Pool | HikariCP | 5.1.0 |
 | Security | BCrypt Password Encoder | 6.3 |
@@ -436,7 +436,7 @@ WORKHUB_FRONTEND_URL=https://your-frontend.vercel.app
 ## 10. Local Development Setup
 
 ### 10.1 Prerequisites
-- Java 17+
+- Java 25+
 - Node.js v18+ & npm
 - PostgreSQL database running locally (or via Docker)
 - Git
@@ -444,9 +444,9 @@ WORKHUB_FRONTEND_URL=https://your-frontend.vercel.app
 ### 10.2 Run Backend (Spring Boot)
 ```bash
 cd backend
-mvn spring-boot:run
+mvnw.cmd spring-boot:run
 ```
-The Spring Boot server starts on `http://localhost:8080`.
+The Spring Boot server starts on `http://localhost:8080` when PostgreSQL is reachable. Set `DATABASE_URL` (or the `SPRING_DATASOURCE_*` variables) to a reachable PostgreSQL database before starting it; the application runs schema initialization during startup and will fail if no database is listening.
 
 ### 10.3 Run Frontend (React + Vite)
 ```bash

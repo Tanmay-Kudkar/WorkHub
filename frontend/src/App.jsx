@@ -1377,16 +1377,16 @@ export default function App() {
                         Tanmay Kudkar
                       </li>
                       <li className="font-semibold text-slate-700 hover:text-blue-600 hover:translate-x-1 transition-all cursor-pointer">
+                        Vedika Takke
+                      </li>
+                      <li className="font-semibold text-slate-700 hover:text-blue-600 hover:translate-x-1 transition-all cursor-pointer">
                         Atharva Raut
                       </li>
                       <li className="font-semibold text-slate-700 hover:text-blue-600 hover:translate-x-1 transition-all cursor-pointer">
-                        Sameer Balgar
+                        Pravin Rathod
                       </li>
                       <li className="font-semibold text-slate-700 hover:text-blue-600 hover:translate-x-1 transition-all cursor-pointer">
-                        Tejas Dhuri
-                      </li>
-                      <li className="font-semibold text-slate-700 hover:text-blue-600 hover:translate-x-1 transition-all cursor-pointer">
-                        Ritikesh Nayak
+                        Durvesh Sonawane
                       </li>
                     </ul>
                   </div>
@@ -1543,7 +1543,7 @@ export default function App() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="leading-tight">Atharva Raut</span>
+                      <span className="leading-tight">Vedika Takke</span>
                     </span>
 
                     <span className="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-[11px] sm:text-sm font-semibold shadow-md cursor-default">
@@ -1554,7 +1554,7 @@ export default function App() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="leading-tight">Sameer Balgar</span>
+                      <span className="leading-tight">Atharva Raut</span>
                     </span>
 
                     <span className="inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-gradient-to-r from-pink-500 to-pink-600 text-white text-[11px] sm:text-sm font-semibold shadow-md cursor-default">
@@ -1565,7 +1565,7 @@ export default function App() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="leading-tight">Tejas Dhuri</span>
+                      <span className="leading-tight">Pravin Rathod</span>
                     </span>
 
                     <span className="col-span-2 inline-flex w-full items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-gradient-to-r from-slate-700 to-slate-800 text-white text-[11px] sm:text-sm font-semibold shadow-md cursor-default sm:col-span-1">
@@ -1576,7 +1576,7 @@ export default function App() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="leading-tight">Ritikesh Nayak</span>
+                      <span className="leading-tight">Durvesh Sonawane</span>
                     </span>
                   </div>
                 </div>
